@@ -481,6 +481,30 @@
             border-left: 3px solid #3498db;
         }
 
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: 94px minmax(105px, 1.35fr) minmax(92px, 1fr) minmax(92px, 1fr);
+            gap: 8px;
+            align-items: stretch;
+        }
+
+        .stats-row .btn-nouvelle-grille {
+            width: 100%;
+            min-height: 64px;
+            align-self: stretch;
+        }
+
+        .stats-row .progression-item,
+        .stats-row .gain-card {
+            min-width: 0;
+            margin: 0;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
         /* RESPONSIVE */
 
         @media (max-width: 520px) {
@@ -502,6 +526,12 @@
             .timer { font-size: 1.25em; }
             .message-zone { font-size: .7em; }
             .stats-section { padding-top: 7px; }
+            .stats-row { grid-template-columns: 72px minmax(86px, 1.25fr) minmax(72px, .9fr) minmax(72px, .9fr); gap: 4px; }
+            .stats-row .btn-nouvelle-grille { min-height: 54px; font-size: .56em; padding: 3px; }
+            .stats-row .progression-item, .stats-row .gain-card { padding: 5px 4px; border-radius: 7px; }
+            .stats-row .progression-label, .stats-row .gain-label { font-size: .54em; letter-spacing: 0; }
+            .stats-row .progression-text { font-size: .65em; }
+            .stats-row .gain-value { font-size: 1.05em; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -528,7 +558,6 @@
         <div class="tirage-panel">
             <div class="btn-zone">
                 <button class="btn-tirer" id="btnTirage" title="Tirer 3 nouvelles boules">Nouveau<br>tirage</button>
-                <button class="btn-nouvelle-grille" id="btnNouvelleGrille" title="Acheter une nouvelle grille pour 5 €">Nouvelle<br>grille<br>− 5 €</button>
             </div>
             <div class="boules-wrapper" id="boulesWrapper"></div>
             <div class="status-zone">
@@ -543,39 +572,23 @@
             <div id="grilleAdversaire"></div>
         </div>
 
-        <!-- STATS EN BAS -->
+        <!-- COMMANDES ET STATS COMPACTES -->
         <div class="stats-section">
-            <div class="progression-container">
-                <div class="progression-item vous">
-                    <div class="progression-label">Vous</div>
-                    <div class="progression-bar">
-                        <div class="progression-fill" id="progVous"></div>
-                    </div>
-                    <div class="progression-text" id="textVous">0 lignes</div>
-                </div>
+            <div class="stats-row">
+                <button class="btn-nouvelle-grille" id="btnNouvelleGrille" title="Acheter une nouvelle grille pour 5 €">Nouvelle<br>grille<br>− 5 €</button>
                 <div class="progression-item boules">
-                    <div class="progression-label">Boules</div>
+                    <div class="progression-label">Boules tirées</div>
                     <div class="progression-bar" style="background: #f5e6d3;">
                         <div class="progression-fill" id="progBoules" style="background: linear-gradient(90deg, #d4a574 0%, #c9914d 100%);"></div>
                     </div>
                     <div class="progression-text" id="textBoules">0/99</div>
                 </div>
-                <div class="progression-item adversaire">
-                    <div class="progression-label">Adv</div>
-                    <div class="progression-bar">
-                        <div class="progression-fill" id="progAdv"></div>
-                    </div>
-                    <div class="progression-text" id="textAdv">0 lignes</div>
-                </div>
-            </div>
-
-            <div class="gains-container">
                 <div class="gain-card vous">
-                    <div class="gain-label">Votre Gain</div>
+                    <div class="gain-label">Mes gains</div>
                     <div class="gain-value" id="gainJoueur">0€</div>
                 </div>
                 <div class="gain-card adversaire">
-                    <div class="gain-label">Gain Adv</div>
+                    <div class="gain-label">Gains adv</div>
                     <div class="gain-value" id="gainAdversaire">0€</div>
                 </div>
             </div>
@@ -673,6 +686,7 @@
             timerInterval: null,
             tirageFinalise: false,
             peutTirer: true,
+            partieTerminee: false,
             partieId: 1
         };
 
@@ -718,8 +732,10 @@
                                     numeroDiv.classList.add('checked');
                                     ligne.checked.add(n);
                                     verifierLignesCompletes();
-                                    mettreAJourCompteurCoches();
-                                    verifierCochageComplet();
+                                    if (!etatJeu.partieTerminee) {
+                                        mettreAJourCompteurCoches();
+                                        verifierCochageComplet();
+                                    }
                                 }
                             });
                         }
@@ -740,7 +756,7 @@
 
         // TIRER 3 BOULES
         function tirer3Boules() {
-            if (etatJeu.index >= 99 || etatJeu.enCours || !etatJeu.peutTirer) return;
+            if (etatJeu.partieTerminee || etatJeu.index >= 99 || etatJeu.enCours || !etatJeu.peutTirer) return;
 
             etatJeu.enCours = true;
             etatJeu.peutTirer = false;
@@ -792,6 +808,7 @@
                 cocherRobot(numeros);
                 verifierLignesCompletes();
                 mettreAJourStats();
+                if (etatJeu.partieTerminee) return;
 
                 etatJeu.enCours = false;
             }, 3000);
@@ -923,7 +940,7 @@
 
         // FINIR TIRAGE
         function finirTirage(cocherAuto = false, delaiReinitialisation = 0) {
-            if (etatJeu.tirageFinalise) return;
+            if (etatJeu.tirageFinalise || etatJeu.partieTerminee) return;
             etatJeu.tirageFinalise = true;
             etatJeu.timerActif = false;
 
@@ -956,10 +973,8 @@
                 afficherGrille(etatJeu.grilleAdversaire, 'grilleAdversaire', true);
                 mettreAJourStats();
 
-                if (etatJeu.index >= 99) {
-                    afficherMessage('Fin de partie !', 'info');
-                    document.getElementById('btnTirage').disabled = true;
-                    etatJeu.peutTirer = false;
+                if (etatJeu.index >= 99 && !etatJeu.partieTerminee) {
+                    terminerPartie(null);
                 }
             };
 
@@ -991,6 +1006,33 @@
             return tousCoches;
         }
 
+        function terminerPartie(gagnant = null) {
+            if (etatJeu.partieTerminee) return;
+            etatJeu.partieTerminee = true;
+            etatJeu.peutTirer = false;
+            etatJeu.enCours = false;
+            etatJeu.timerActif = false;
+            etatJeu.tirageFinalise = true;
+            etatJeu.partieId++;
+            if (etatJeu.timerInterval) {
+                clearInterval(etatJeu.timerInterval);
+                etatJeu.timerInterval = null;
+            }
+            document.getElementById('btnTirage').disabled = true;
+            document.getElementById('timerZone').innerHTML = '';
+            document.getElementById('grilleJoueurDiv').classList.remove('tirage-actif', 'validation-actif');
+            document.getElementById('grilleAdversaireDiv').classList.remove('tirage-actif', 'validation-actif');
+            if (gagnant === 'joueur') {
+                afficherMessage('Grille complète ! Bravo à vous !', 'victoire');
+                jouerSon('bingo');
+            } else if (gagnant === 'robot') {
+                afficherMessage('Grille complète ! Bravo au robot !', 'defaite');
+            } else {
+                afficherMessage('Les 99 numéros ont été tirés. Partie terminée !', 'info');
+            }
+            mettreAJourStats();
+        }
+
         // PAYER UNE LIGNE UNIQUEMENT LORSQU'ELLE EST RÉELLEMENT COCHÉE
         function verifierLignesCompletes() {
             const gains = [10, 25, 60];
@@ -1014,6 +1056,11 @@
                     }
                 });
             });
+
+            const joueurComplet = etatJeu.grilleJoueur.every(ligne => ligne.numeros.every(n => ligne.checked.has(n)));
+            const robotComplet = etatJeu.grilleAdversaire.every(ligne => ligne.numeros.every(n => ligne.checked.has(n)));
+            if (joueurComplet) terminerPartie('joueur');
+            else if (robotComplet) terminerPartie('robot');
         }
 
         // MESSAGE
@@ -1027,16 +1074,7 @@
             document.getElementById('gainJoueur').textContent = etatJeu.gainJoueur + '€';
             document.getElementById('gainAdversaire').textContent = etatJeu.gainAdversaire + '€';
             
-            const totalLignes = 3;
-            const percentVous = (etatJeu.lignesJoueur / totalLignes) * 100;
-            const percentAdv = (etatJeu.lignesAdversaire / totalLignes) * 100;
             const percentBoules = (etatJeu.index / 99) * 100;
-
-            document.getElementById('progVous').style.width = percentVous + '%';
-            document.getElementById('textVous').textContent = etatJeu.lignesJoueur + ' lignes';
-
-            document.getElementById('progAdv').style.width = percentAdv + '%';
-            document.getElementById('textAdv').textContent = etatJeu.lignesAdversaire + ' lignes';
 
             document.getElementById('progBoules').style.width = percentBoules + '%';
             document.getElementById('textBoules').textContent = etatJeu.index + '/99';
@@ -1063,6 +1101,7 @@
             etatJeu.timerActif = false;
             etatJeu.tirageFinalise = false;
             etatJeu.peutTirer = true;
+            etatJeu.partieTerminee = false;
 
             document.getElementById('grilleJoueurDiv').classList.remove('tirage-actif', 'validation-actif');
             document.getElementById('grilleAdversaireDiv').classList.remove('tirage-actif', 'validation-actif');
