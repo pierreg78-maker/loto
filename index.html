@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎰 Loto Magique &#128176;</title>
+    <title>Loto Bingo</title>
     <style>
         * {
             margin: 0;
@@ -573,7 +573,7 @@
     <div class="container">
         <!-- HEADER -->
         <div class="header">
-            <h1>🎰 LOTO</h1>
+            <h1>🎰 Loto Bingo &#128176;</h1>
             <a class="back-link" href="https://pierreg78-maker.github.io/Atelier/">Retour<br>à<br>l'accueil</a>
         </div>
 
@@ -604,7 +604,7 @@
         <!-- COMMANDES ET STATS COMPACTES -->
         <div class="stats-section">
             <div class="stats-row">
-                <button class="btn-nouvelle-grille" id="btnNouvelleGrille" title="Acheter une nouvelle grille pour 5 €">Nouvelle<br>grille<br>− 5 €</button>
+                <button class="btn-nouvelle-grille" id="btnNouvelleGrille" title="Acheter une nouvelle grille pour 5 €">Nouvelle<br>grille: 5 €</button>
                 <div class="progression-item boules">
                     <div class="progression-label">Boules tirées</div>
                     <div class="progression-bar" style="background: #f5e6d3;">
@@ -991,7 +991,7 @@
             } else if (totalACocher === 0) {
                 afficherMessage('Aucun numéro à cocher', 'info');
             } else {
-                afficherMessage('✓ Bien coché !', 'victoire');
+                afficherMessage('Bien coché!', 'victoire');
             }
 
             const reinitialiser = () => {
