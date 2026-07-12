@@ -47,6 +47,34 @@
             color: #fff;
             text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
         }
+        
+        /* BOUTON RETOUR VERS L'ACCUEIL */
+        .back-link {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    z-index: 10;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 58px;
+    height: 58px;
+    background: #4A7CCC;
+    color: white;
+    text-decoration: none;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.05;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+    transition: transform .15s ease, filter .15s ease;
+  }
+
+  .back-link:hover { filter: brightness(1.08); }
+  .back-link:active { transform: scale(.95); }
+
 
         /* GRILLES */
         .grille-joueur, .grille-adversaire {
@@ -546,6 +574,7 @@
         <!-- HEADER -->
         <div class="header">
             <h1>🎰 LOTO</h1>
+            <a class="back-link" href="https://pierreg78-maker.github.io/Atelier/">Retour<br>à<br>l'accueil</a>
         </div>
 
         <!-- MA GRILLE -->
