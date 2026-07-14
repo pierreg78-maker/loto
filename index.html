@@ -533,6 +533,14 @@
             justify-content: center;
         }
 
+        /* PROFIL ACTIF ET PORTE-MONNAIE */
+        .profil-barre{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:8px;color:#fff;font-weight:700;font-size:.9em}
+        .profil-badge,.solde-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35)}
+        .profil-alerte{display:none;background:#fff3cd;border:2px solid #e0ad32;color:#664d03;border-radius:12px;padding:12px;margin-bottom:10px;text-align:center;font-weight:700}
+        .profil-alerte.visible{display:block}
+        .profil-alerte a{color:#664d03}
+        .gain-envoi{opacity:.65}
+
         /* RESPONSIVE */
 
         @media (max-width: 520px) {
@@ -573,8 +581,17 @@
     <div class="container">
         <!-- HEADER -->
         <div class="header">
-            <h1>🎰 Loto Bingo &#128176;</h1>
-            <a class="back-link" href="https://pierreg78-maker.github.io/Atelier/">Retour<br>à<br>l'accueil</a>
+            <h1>🎰 Loto Bingo 🪙</h1>
+            <div class="profil-barre">
+                <span class="profil-badge">👤 <span id="profilNom">Aucun profil</span></span>
+                <span class="solde-badge">🪙 <span id="profilSolde">0</span> pièces d’or</span>
+            </div>
+            <a class="back-link" href="https://pierreg78-maker.github.io/vitrine-enchantee/">Retour<br>à la<br>vitrine</a>
+        </div>
+
+        <div class="profil-alerte" id="profilAlerte">
+            Aucun joueur n’est sélectionné.
+            <a href="https://pierreg78-maker.github.io/vitrine-enchantee/profil-demo.html">Choisir un profil</a>
         </div>
 
         <!-- MA GRILLE -->
@@ -604,7 +621,7 @@
         <!-- COMMANDES ET STATS COMPACTES -->
         <div class="stats-section">
             <div class="stats-row">
-                <button class="btn-nouvelle-grille" id="btnNouvelleGrille" title="Acheter une nouvelle grille pour 5 €">Nouvelle<br>grille: 5 €</button>
+                <button class="btn-nouvelle-grille" id="btnNouvelleGrille" title="Commencer une nouvelle partie">Nouvelle<br>grille</button>
                 <div class="progression-item boules">
                     <div class="progression-label">Boules tirées</div>
                     <div class="progression-bar" style="background: #f5e6d3;">
@@ -614,17 +631,146 @@
                 </div>
                 <div class="gain-card vous">
                     <div class="gain-label">Mes gains</div>
-                    <div class="gain-value" id="gainJoueur">0€</div>
+                    <div class="gain-value" id="gainJoueur">0 🪙</div>
                 </div>
                 <div class="gain-card adversaire">
                     <div class="gain-label">Gains du Robot</div>
-                    <div class="gain-value" id="gainAdversaire">0€</div>
+                    <div class="gain-value" id="gainAdversaire">0 🪙</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyh1LbQNETMy0GS7A5SzACTPMYlFEal9W3-XZozkwzIkAAUhlo_InN-5FOrI9eEqPoEeA/exec';
+        const CLE_PROFIL = 'vitrineProfilActif';
+        let profilActif = null;
+
+        function lireProfilActif() {
+            try {
+                const profil = JSON.parse(localStorage.getItem(CLE_PROFIL) || 'null');
+                return profil && profil.id ? profil : null;
+            } catch (erreur) {
+                localStorage.removeItem(CLE_PROFIL);
+                return null;
+            }
+        }
+
+        function sauvegarderProfilActif(profil) {
+            profilActif = {
+                id: profil.id,
+                prenom: profil.prenom,
+                piecesOr: Number(profil.piecesOr ?? profil.solde ?? 0)
+            };
+            localStorage.setItem(CLE_PROFIL, JSON.stringify(profilActif));
+            afficherProfil();
+        }
+
+        function afficherProfil() {
+            const alerte = document.getElementById('profilAlerte');
+            const boutonTirage = document.getElementById('btnTirage');
+            const boutonNouvelleGrille = document.getElementById('btnNouvelleGrille');
+
+            if (!profilActif) {
+                document.getElementById('profilNom').textContent = 'Aucun profil';
+                document.getElementById('profilSolde').textContent = '0';
+                alerte.classList.add('visible');
+                boutonTirage.disabled = true;
+                boutonNouvelleGrille.disabled = true;
+                return;
+            }
+
+            document.getElementById('profilNom').textContent = profilActif.prenom;
+            document.getElementById('profilSolde').textContent = Math.trunc(Number(profilActif.piecesOr) || 0);
+            alerte.classList.remove('visible');
+
+            if (!etatJeu.partieTerminee) {
+                boutonTirage.disabled = false;
+                boutonNouvelleGrille.disabled = false;
+            }
+        }
+
+        async function actualiserProfilDepuisServeur() {
+            profilActif = lireProfilActif();
+            afficherProfil();
+            if (!profilActif) return false;
+
+            try {
+                const url = new URL(API_URL);
+                url.searchParams.set('action', 'obtenirProfil');
+                url.searchParams.set('id', profilActif.id);
+                url.searchParams.set('_', Date.now());
+
+                const reponse = await fetch(url, { method: 'GET', cache: 'no-store' });
+                const resultat = await reponse.json();
+
+                if (!resultat.ok || !resultat.profil) {
+                    throw new Error(resultat.erreur || 'Profil introuvable.');
+                }
+
+                sauvegarderProfilActif(resultat.profil);
+                return true;
+            } catch (erreur) {
+                afficherMessage('Impossible d’actualiser le profil.', 'defaite');
+                return false;
+            }
+        }
+
+        function creerTransactionGain(ligneIndex) {
+            return ['loto', profilActif.id, etatJeu.sessionId, etatJeu.partieId, 'ligne', ligneIndex + 1].join('-');
+        }
+
+        async function crediterGainProfil(montant, ligneIndex) {
+            if (!profilActif) {
+                afficherMessage('Gain non enregistré : aucun profil sélectionné.', 'defaite');
+                return false;
+            }
+
+            const gainElement = document.getElementById('gainJoueur');
+            gainElement.classList.add('gain-envoi');
+
+            try {
+                const reponse = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'gain',
+                        profilId: profilActif.id,
+                        montant: montant,
+                        jeu: 'Loto Bingo',
+                        commentaire: 'Ligne ' + (ligneIndex + 1) + ' complétée',
+                        transactionId: creerTransactionGain(ligneIndex)
+                    })
+                });
+
+                const resultat = await reponse.json();
+
+                if (!resultat.ok) {
+                    throw new Error(resultat.erreur || 'Gain non enregistré.');
+                }
+
+                if (resultat.profil) {
+                    sauvegarderProfilActif(resultat.profil);
+                } else if (Number.isFinite(Number(resultat.nouveauSolde))) {
+                    profilActif.piecesOr = Number(resultat.nouveauSolde);
+                    sauvegarderProfilActif(profilActif);
+                }
+
+                afficherMessage(
+                    resultat.dejaEnregistre
+                        ? 'Ce gain était déjà enregistré.'
+                        : '🎉 +' + montant + ' pièces d’or ajoutées au profil de ' + profilActif.prenom,
+                    'victoire'
+                );
+                return true;
+            } catch (erreur) {
+                afficherMessage('⚠️ Gain non enregistré : ' + erreur.message, 'defaite');
+                return false;
+            } finally {
+                gainElement.classList.remove('gain-envoi');
+            }
+        }
+
         // SONS
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -698,15 +844,13 @@
         }
 
         // ÉTAT DU JEU
-        const COUT_GRILLE = 5;
-
         let etatJeu = {
             grilleJoueur: genererGrille(),
             grilleAdversaire: genererGrille(),
             numeroRestants: Array.from({length: 99}, (_, i) => i + 1).sort(() => Math.random() - 0.5),
             index: 0,
-            gainJoueur: -COUT_GRILLE,
-            gainAdversaire: -COUT_GRILLE,
+            gainJoueur: 0,
+            gainAdversaire: 0,
             lignesJoueur: 0,
             lignesAdversaire: 0,
             enCours: false,
@@ -716,7 +860,8 @@
             tirageFinalise: false,
             peutTirer: true,
             partieTerminee: false,
-            partieId: 1
+            partieId: 1,
+            sessionId: Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10)
         };
 
         // AFFICHAGE GRILLE
@@ -774,7 +919,7 @@
 
                 const gainDiv = document.createElement('div');
                 gainDiv.className = 'ligne-gain';
-                gainDiv.textContent = gains[idx] + '€';
+                gainDiv.textContent = gains[idx] + ' 🪙';
 
                 ligneDiv.appendChild(ligneNumDiv);
                 ligneDiv.appendChild(numerosDiv);
@@ -1074,12 +1219,13 @@
                         if (isAdv) {
                             etatJeu.gainAdversaire += gain;
                             etatJeu.lignesAdversaire++;
-                            afficherMessage(`🤖 Ligne ${ligneIdx + 1} complète : +${gain} €`, 'defaite');
+                            afficherMessage(`🤖 Ligne ${ligneIdx + 1} complète : +${gain} pièces`, 'defaite');
                         } else {
                             etatJeu.gainJoueur += gain;
                             etatJeu.lignesJoueur++;
-                            afficherMessage(`🎉 Ligne ${ligneIdx + 1} complète : +${gain} €`, 'victoire');
+                            afficherMessage(`🎉 Ligne ${ligneIdx + 1} complète : +${gain} pièces`, 'victoire');
                             jouerSon('bingo');
+                            crediterGainProfil(gain, ligneIdx);
                         }
                         mettreAJourStats();
                     }
@@ -1100,8 +1246,8 @@
 
         // MISE À JOUR STATS
         function mettreAJourStats() {
-            document.getElementById('gainJoueur').textContent = etatJeu.gainJoueur + '€';
-            document.getElementById('gainAdversaire').textContent = etatJeu.gainAdversaire + '€';
+            document.getElementById('gainJoueur').textContent = etatJeu.gainJoueur + ' 🪙';
+            document.getElementById('gainAdversaire').textContent = etatJeu.gainAdversaire + ' 🪙';
             
             const percentBoules = (etatJeu.index / 99) * 100;
 
@@ -1117,8 +1263,6 @@
                 etatJeu.timerInterval = null;
             }
 
-            etatJeu.gainJoueur -= COUT_GRILLE;
-            etatJeu.gainAdversaire -= COUT_GRILLE;
             etatJeu.grilleJoueur = genererGrille();
             etatJeu.grilleAdversaire = genererGrille();
             etatJeu.numeroRestants = Array.from({length: 99}, (_, i) => i + 1).sort(() => Math.random() - 0.5);
@@ -1140,7 +1284,7 @@
             document.getElementById('timerZone').innerHTML = '';
             document.getElementById('boulesWrapper').innerHTML = '';
             mettreAJourStats();
-            afficherMessage('Nouvelle grille achetée : −5 €', 'info');
+            afficherMessage('Nouvelle grille prête !', 'info');
         }
 
         // INITIALISATION
@@ -1152,7 +1296,7 @@
             document.getElementById('messageZone').innerHTML = '';
             document.getElementById('boulesWrapper').innerHTML = '';
             mettreAJourStats();
-            afficherMessage('Grille achetée : −5 €', 'info');
+            afficherMessage('Bonne chance !', 'info');
         }
 
         // EVENT LISTENERS
@@ -1161,6 +1305,7 @@
 
         // DÉMARRAGE
         initialiser();
+        actualiserProfilDepuisServeur();
     </script>
 </body>
 </html>
