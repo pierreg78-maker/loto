@@ -54,7 +54,7 @@
         }
 
         .header h1 {
-            font-size: 1.4em;
+            font-size: 1.8em;
             font-weight: 400;
             letter-spacing: 2px;
             color: #fff;
@@ -914,7 +914,7 @@
             const container = document.getElementById(elementId);
             container.innerHTML = '';
 
-            const gains = [10, 25, 60];
+            const gains = [5, 10, 15];
             grille.forEach((ligne, idx) => {
                 const ligneDiv = document.createElement('div');
                 ligneDiv.className = 'ligne';
@@ -1254,7 +1254,7 @@
 
         // PAYER UNE LIGNE UNIQUEMENT LORSQU'ELLE EST RÉELLEMENT COCHÉE
         function verifierLignesCompletes() {
-            const gains = [10, 25, 60];
+            const gains = [5, 10, 15];
             [etatJeu.grilleJoueur, etatJeu.grilleAdversaire].forEach((grille, isAdv) => {
                 grille.forEach((ligne, ligneIdx) => {
                     if (!ligne.gagnee && ligne.numeros.every(n => ligne.checked.has(n))) {
