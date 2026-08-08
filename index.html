@@ -789,15 +789,15 @@
                     } else {
                         var n = ligne.numeros[ni++]; cd.textContent = n; cd.dataset.numero = n; cd.dataset.ligne = idx;
                         if (ligne.checked[n]) cd.classList.add(isAdv ? 'checked-bot' : 'checked');
-                        if (!isAdv) (function(num, l) {
-                            cd.addEventListener('click', function() {
+                        if (!isAdv) (function(num, l, caseEl) {
+                            caseEl.addEventListener('click', function() {
                                 if (etatJeu.timerActif && etatJeu.boulesTirees.indexOf(num) !== -1 && !l.checked[num]) {
-                                    cd.classList.add('checked'); l.checked[num] = true;
+                                    caseEl.classList.add('checked'); l.checked[num] = true;
                                     verifierLignesCompletes();
                                     if (!etatJeu.partieTerminee) { mettreAJourCompteurCoches(); verifierCochageComplet(); }
                                 }
                             });
-                        })(n, ligne);
+                        })(n, ligne, cd);
                     }
                     nd.appendChild(cd);
                 }
