@@ -216,7 +216,6 @@
             overflow: visible;
         }
 
-        /* Lueur d'ambiance derrière les boules */
         .boules-wrapper::before {
             content: '';
             position: absolute;
@@ -226,7 +225,6 @@
             border-radius: 20px;
         }
 
-        /* Sol / surface de roulement */
         .boules-wrapper::after {
             content: '';
             position: absolute;
@@ -281,7 +279,6 @@
             }
         }
 
-        /* Flash doré à la révélation du numéro */
         .boule-container.revele {
             animation: flashRevelation 0.7s ease-out forwards;
         }
@@ -301,7 +298,8 @@
             display: block;
         }
 
-        svg .boule-numero {
+        /* Sélecteur spécifique pour éviter les conflits */
+        svg text.boule-chiffre {
             font-weight: 900;
             font-size: 26px;
             fill: #4a3520;
@@ -310,16 +308,14 @@
             font-family: 'Georgia', serif;
         }
 
-        /* Style du "?" pendant le roulement */
-        svg .boule-numero.interrogation {
+        svg text.boule-chiffre.interrogation {
             font-style: italic;
             font-size: 30px;
             fill: #8b6914;
             opacity: 0.65;
         }
 
-        /* Animation du numéro qui apparaît */
-        svg .boule-numero.reveler {
+        svg text.boule-chiffre.reveler {
             animation: numeroApparaitre 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 
@@ -338,7 +334,6 @@
             }
         }
 
-        /* Étincelles qui éclatent à la révélation */
         .etincelle {
             position: absolute;
             border-radius: 50%;
@@ -662,8 +657,8 @@
             .btn-nouvelle-grille { width: 74px; min-height: 34px; border-radius: 14px; font-size: .58em; padding: 4px; }
             .boules-wrapper { min-height: 90px; gap: 4px; }
             .boule-container { width: clamp(60px, 21vw, 82px); height: clamp(60px, 21vw, 82px); }
-            svg .boule-numero { font-size: 20px; }
-            svg .boule-numero.interrogation { font-size: 24px; }
+            svg text.boule-chiffre { font-size: 20px; }
+            svg text.boule-chiffre.interrogation { font-size: 24px; }
             .timer { font-size: 1.25em; }
             .message-zone { font-size: .7em; }
             .stats-section { margin-top: 0; padding-top: 0; }
@@ -694,28 +689,16 @@
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .boule-container.rouler {
-                animation: none;
-                opacity: 1;
-                transform: none;
-            }
-            .boule-container.revele {
-                animation: none;
-            }
-            .etincelle {
-                display: none;
-            }
-            svg .boule-numero.reveler {
-                animation: none;
-            }
+            .boule-container.rouler { animation: none; opacity: 1; transform: none; }
+            .boule-container.revele { animation: none; }
+            .etincelle { display: none; }
+            svg text.boule-chiffre.reveler { animation: none; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- HEADER -->
         <div class="header">
-
             <h1>🎰 Loto Bingo 🪙</h1>
             <div class="profil-barre">
                 <span class="profil-badge">👤 <span id="profilNom">Aucun profil</span></span>
@@ -725,7 +708,6 @@
                 <button class="profil-action" id="btnChangerProfil" type="button">Changer de profil</button>
                 <button class="profil-action" id="btnJouerAnonyme" type="button">Jouer anonymement</button>
             </div>
-
         </div>
 
         <div class="profil-alerte" id="profilAlerte">
@@ -733,13 +715,11 @@
             Vous pouvez choisir un profil ou jouer anonymement.
         </div>
 
-        <!-- MA GRILLE -->
         <div class="grille-joueur" id="grilleJoueurDiv">
             <div class="titre-grille">Ma grille</div>
             <div id="grilleJoueur"></div>
         </div>
 
-        <!-- COMMANDES + BOULES + STATUT -->
         <div class="tirage-panel">
             <div class="btn-zone">
                 <button class="btn-tirer" id="btnTirage" title="Tirer 3 nouvelles boules">Nouveau<br>tirage</button>
@@ -751,13 +731,11 @@
             </div>
         </div>
 
-        <!-- GRILLE ADVERSAIRE -->
         <div class="grille-adversaire" id="grilleAdversaireDiv">
             <div class="titre-grille">Adversaire 🤖</div>
             <div id="grilleAdversaire"></div>
         </div>
 
-        <!-- COMMANDES ET STATS COMPACTES -->
         <div class="stats-section">
             <div class="stats-row">
                 <button class="btn-nouvelle-grille" id="btnNouvelleGrille" title="Commencer une nouvelle partie">Nouvelle<br>grille</button>
@@ -772,11 +750,7 @@
                     <div class="gain-label">Mes gains</div>
                     <div class="gain-value" id="gainJoueur">0 🪙</div>
                 </div>
-                <a
-                    class="btn-vitrine"
-                    href="https://pierreg78-maker.github.io/village/"
-                    title="Retour au village"
-                >
+                <a class="btn-vitrine" href="https://pierreg78-maker.github.io/village/" title="Retour au village">
                     <span class="etoile">&#127969;</span>
                     <span>Retour au Village</span>
                 </a>
@@ -795,7 +769,7 @@
             try {
                 const profil = JSON.parse(localStorage.getItem(CLE_PROFIL) || 'null');
                 return profil && profil.id ? profil : null;
-            } catch (erreur) {
+            } catch (e) {
                 localStorage.removeItem(CLE_PROFIL);
                 return null;
             }
@@ -813,7 +787,6 @@
 
         function afficherProfil() {
             const alerte = document.getElementById('profilAlerte');
-
             if (modeAnonyme) {
                 document.getElementById('profilNom').textContent = 'Joueur anonyme';
                 document.getElementById('profilNom').classList.add('mode-anonyme');
@@ -821,16 +794,13 @@
                 alerte.classList.remove('visible');
                 return;
             }
-
             document.getElementById('profilNom').classList.remove('mode-anonyme');
-
             if (!profilActif) {
                 document.getElementById('profilNom').textContent = 'Aucun profil';
                 document.getElementById('profilSolde').textContent = '0';
                 alerte.classList.add('visible');
                 return;
             }
-
             document.getElementById('profilNom').textContent = profilActif.prenom;
             document.getElementById('profilSolde').textContent = Math.trunc(Number(profilActif.piecesOr) || 0);
             alerte.classList.remove('visible');
@@ -838,32 +808,21 @@
 
         async function actualiserProfilDepuisServeur() {
             modeAnonyme = localStorage.getItem(CLE_MODE_ANONYME) === '1';
-            if (modeAnonyme) {
-                profilActif = null;
-                afficherProfil();
-                return true;
-            }
-
+            if (modeAnonyme) { profilActif = null; afficherProfil(); return true; }
             profilActif = lireProfilActif();
             afficherProfil();
             if (!profilActif) return true;
-
             try {
                 const url = new URL(API_URL);
                 url.searchParams.set('action', 'obtenirProfil');
                 url.searchParams.set('id', profilActif.id);
                 url.searchParams.set('_', Date.now());
-
-                const reponse = await fetch(url, { method: 'GET', cache: 'no-store' });
-                const resultat = await reponse.json();
-
-                if (!resultat.ok || !resultat.profil) {
-                    throw new Error(resultat.erreur || 'Profil introuvable.');
-                }
-
-                sauvegarderProfilActif(resultat.profil);
+                const r = await fetch(url, { method: 'GET', cache: 'no-store' });
+                const res = await r.json();
+                if (!res.ok || !res.profil) throw new Error(res.erreur || 'Profil introuvable.');
+                sauvegarderProfilActif(res.profil);
                 return true;
-            } catch (erreur) {
+            } catch (e) {
                 afficherMessage('Impossible d\'actualiser le profil.', 'defaite');
                 return false;
             }
@@ -875,217 +834,127 @@
 
         async function crediterGainProfil(montant, ligneIndex) {
             if (modeAnonyme || !profilActif) {
-                afficherMessage('🎉 +' + montant + ' pièces gagnées dans cette partie (non enregistrées)', 'victoire');
+                afficherMessage('🎉 +' + montant + ' pièces gagnées (non enregistrées)', 'victoire');
                 return true;
             }
-
-            const gainElement = document.getElementById('gainJoueur');
-            gainElement.classList.add('gain-envoi');
-
+            const gainEl = document.getElementById('gainJoueur');
+            gainEl.classList.add('gain-envoi');
             try {
-                const reponse = await fetch(API_URL, {
+                const r = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
-                        action: 'gain',
-                        profilId: profilActif.id,
-                        montant: montant,
-                        jeu: 'Loto Bingo',
-                        commentaire: 'Ligne ' + (ligneIndex + 1) + ' complétée',
+                        action: 'gain', profilId: profilActif.id, montant: montant,
+                        jeu: 'Loto Bingo', commentaire: 'Ligne ' + (ligneIndex + 1) + ' complétée',
                         transactionId: creerTransactionGain(ligneIndex)
                     })
                 });
-
-                const resultat = await reponse.json();
-
-                if (!resultat.ok) {
-                    throw new Error(resultat.erreur || 'Gain non enregistré.');
-                }
-
-                if (resultat.profil) {
-                    sauvegarderProfilActif(resultat.profil);
-                } else if (Number.isFinite(Number(resultat.nouveauSolde))) {
-                    profilActif.piecesOr = Number(resultat.nouveauSolde);
+                const res = await r.json();
+                if (!res.ok) throw new Error(res.erreur || 'Gain non enregistré.');
+                if (res.profil) sauvegarderProfilActif(res.profil);
+                else if (Number.isFinite(Number(res.nouveauSolde))) {
+                    profilActif.piecesOr = Number(res.nouveauSolde);
                     sauvegarderProfilActif(profilActif);
                 }
-
-                afficherMessage(
-                    resultat.dejaEnregistre
-                        ? 'Ce gain était déjà enregistré.'
-                        : '🎉 +' + montant + ' pièces d\'or ajoutées au profil de ' + profilActif.prenom,
-                    'victoire'
-                );
+                afficherMessage(res.dejaEnregistre ? 'Gain déjà enregistré.' : '🎉 +' + montant + ' pièces pour ' + profilActif.prenom, 'victoire');
                 return true;
-            } catch (erreur) {
-                afficherMessage('⚠️ Gain non enregistré : ' + erreur.message, 'defaite');
+            } catch (e) {
+                afficherMessage('⚠️ Gain non enregistré : ' + e.message, 'defaite');
                 return false;
-            } finally {
-                gainElement.classList.remove('gain-envoi');
-            }
+            } finally { gainEl.classList.remove('gain-envoi'); }
         }
 
         // SONS
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
         function jouerSon(type) {
             const now = audioContext.currentTime;
-            const osc = audioContext.createOscillator();
-            const gain = audioContext.createGain();
-
-            osc.connect(gain);
-            gain.connect(audioContext.destination);
-
             if (type === 'whoosh') {
-                osc.frequency.setValueAtTime(800, now);
-                osc.frequency.exponentialRampToValueAtTime(400, now + 0.3);
-                gain.gain.setValueAtTime(0.3, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                osc.start(now);
-                osc.stop(now + 0.3);
+                const o = audioContext.createOscillator(), g = audioContext.createGain();
+                o.connect(g); g.connect(audioContext.destination);
+                o.frequency.setValueAtTime(800, now); o.frequency.exponentialRampToValueAtTime(400, now + 0.3);
+                g.gain.setValueAtTime(0.3, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                o.start(now); o.stop(now + 0.3);
             } else if (type === 'ding') {
-                osc.frequency.setValueAtTime(1200, now);
-                gain.gain.setValueAtTime(0.2, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                osc.start(now);
-                osc.stop(now + 0.3);
+                const o = audioContext.createOscillator(), g = audioContext.createGain();
+                o.connect(g); g.connect(audioContext.destination);
+                o.frequency.setValueAtTime(1200, now);
+                g.gain.setValueAtTime(0.2, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                o.start(now); o.stop(now + 0.3);
             } else if (type === 'bingo') {
-                const notes = [523.25, 659.25, 783.99];
-                notes.forEach((freq, i) => {
-                    const o = audioContext.createOscillator();
-                    const g = audioContext.createGain();
-                    o.connect(g);
-                    g.connect(audioContext.destination);
-                    o.frequency.value = freq;
+                [523.25, 659.25, 783.99].forEach((freq, i) => {
+                    const o = audioContext.createOscillator(), g = audioContext.createGain();
+                    o.connect(g); g.connect(audioContext.destination); o.frequency.value = freq;
                     g.gain.setValueAtTime(0.15, now + i * 0.08);
                     g.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.25);
-                    o.start(now + i * 0.08);
-                    o.stop(now + i * 0.08 + 0.25);
+                    o.start(now + i * 0.08); o.stop(now + i * 0.08 + 0.25);
                 });
             }
         }
 
         // GÉNÉRATION GRILLES
         function genererGrille() {
-            const tailles = [5, 6, 7];
-            const grille = [];
-            const usedNums = new Set();
-
+            const tailles = [5, 6, 7], grille = [], used = new Set();
             tailles.forEach(taille => {
                 const ligne = [];
                 while (ligne.length < taille) {
-                    const num = Math.floor(Math.random() * 99) + 1;
-                    if (!usedNums.has(num)) {
-                        ligne.push(num);
-                        usedNums.add(num);
-                    }
+                    const n = Math.floor(Math.random() * 99) + 1;
+                    if (!used.has(n)) { ligne.push(n); used.add(n); }
                 }
-                const numerosTries = ligne.sort((a, b) => a - b);
-                const positions = Array.from({ length: 8 }, (_, i) => i)
-                    .sort(() => Math.random() - 0.5)
-                    .slice(0, taille)
-                    .sort((a, b) => a - b);
-                grille.push({
-                    numeros: numerosTries,
-                    positions,
-                    matching: [],
-                    checked: new Set(),
-                    gagnee: false
-                });
+                const triees = ligne.sort((a, b) => a - b);
+                const positions = Array.from({length: 8}, (_, i) => i).sort(() => Math.random() - 0.5).slice(0, taille).sort((a, b) => a - b);
+                grille.push({ numeros: triees, positions, matching: [], checked: new Set(), gagnee: false });
             });
-
             return grille;
         }
 
         // ÉTAT DU JEU
         let etatJeu = {
-            grilleJoueur: genererGrille(),
-            grilleAdversaire: genererGrille(),
+            grilleJoueur: genererGrille(), grilleAdversaire: genererGrille(),
             numeroRestants: Array.from({length: 99}, (_, i) => i + 1).sort(() => Math.random() - 0.5),
-            index: 0,
-            gainJoueur: 0,
-            gainAdversaire: 0,
-            lignesJoueur: 0,
-            lignesAdversaire: 0,
-            enCours: false,
-            boulesTirees: [],
-            timerActif: false,
-            timerInterval: null,
-            tirageFinalise: false,
-            peutTirer: true,
-            partieTerminee: false,
-            partieId: 1,
+            index: 0, gainJoueur: 0, gainAdversaire: 0, lignesJoueur: 0, lignesAdversaire: 0,
+            enCours: false, boulesTirees: [], timerActif: false, timerInterval: null,
+            tirageFinalise: false, peutTirer: true, partieTerminee: false, partieId: 1,
             sessionId: Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10)
         };
 
         // AFFICHAGE GRILLE
-        function afficherGrille(grille, elementId, isAdversaire = false) {
-            const container = document.getElementById(elementId);
-            container.innerHTML = '';
-
+        function afficherGrille(grille, elId, isAdv = false) {
+            const c = document.getElementById(elId); c.innerHTML = '';
             const gains = [5, 10, 15];
             grille.forEach((ligne, idx) => {
-                const ligneDiv = document.createElement('div');
-                ligneDiv.className = 'ligne';
-
-                const ligneNumDiv = document.createElement('div');
-                ligneNumDiv.className = 'ligne-numero';
-                ligneNumDiv.textContent = `L${idx + 1}`;
-
-                const numerosDiv = document.createElement('div');
-                numerosDiv.className = 'ligne-numeros';
-                numerosDiv.id = `nums${elementId}${idx}`;
-
-                let numeroIndex = 0;
-                for (let position = 0; position < 8; position++) {
-                    const numeroDiv = document.createElement('div');
-                    numeroDiv.className = 'numero-case';
-
-                    if (!ligne.positions.includes(position)) {
-                        numeroDiv.classList.add('case-grise');
-                        numeroDiv.setAttribute('aria-hidden', 'true');
-                    } else {
-                        const n = ligne.numeros[numeroIndex++];
-                        numeroDiv.textContent = n;
-                        numeroDiv.dataset.numero = n;
-                        numeroDiv.dataset.ligne = idx;
-
-                        if (ligne.checked.has(n)) {
-                            numeroDiv.classList.add(isAdversaire ? 'checked-bot' : 'checked');
-                        }
-
-                        if (!isAdversaire) {
-                            numeroDiv.addEventListener('click', () => {
-                                if (etatJeu.timerActif && etatJeu.boulesTirees.includes(n) && !ligne.checked.has(n)) {
-                                    numeroDiv.classList.add('checked');
-                                    ligne.checked.add(n);
-                                    verifierLignesCompletes();
-                                    if (!etatJeu.partieTerminee) {
-                                        mettreAJourCompteurCoches();
-                                        verifierCochageComplet();
-                                    }
-                                }
-                            });
-                        }
+                const ld = document.createElement('div'); ld.className = 'ligne';
+                const ln = document.createElement('div'); ln.className = 'ligne-numero'; ln.textContent = 'L' + (idx + 1);
+                const nd = document.createElement('div'); nd.className = 'ligne-numeros'; nd.id = 'nums' + elId + idx;
+                let ni = 0;
+                for (let p = 0; p < 8; p++) {
+                    const cd = document.createElement('div'); cd.className = 'numero-case';
+                    if (!ligne.positions.includes(p)) { cd.classList.add('case-grise'); cd.setAttribute('aria-hidden', 'true'); }
+                    else {
+                        const n = ligne.numeros[ni++]; cd.textContent = n; cd.dataset.numero = n; cd.dataset.ligne = idx;
+                        if (ligne.checked.has(n)) cd.classList.add(isAdv ? 'checked-bot' : 'checked');
+                        if (!isAdv) cd.addEventListener('click', () => {
+                            if (etatJeu.timerActif && etatJeu.boulesTirees.includes(n) && !ligne.checked.has(n)) {
+                                cd.classList.add('checked'); ligne.checked.add(n);
+                                verifierLignesCompletes();
+                                if (!etatJeu.partieTerminee) { mettreAJourCompteurCoches(); verifierCochageComplet(); }
+                            }
+                        });
                     }
-                    numerosDiv.appendChild(numeroDiv);
+                    nd.appendChild(cd);
                 }
-
-                const gainDiv = document.createElement('div');
-                gainDiv.className = 'ligne-gain';
-                gainDiv.textContent = gains[idx] + ' 🪙';
-
-                ligneDiv.appendChild(ligneNumDiv);
-                ligneDiv.appendChild(numerosDiv);
-                ligneDiv.appendChild(gainDiv);
-                container.appendChild(ligneDiv);
+                const gd = document.createElement('div'); gd.className = 'ligne-gain'; gd.textContent = gains[idx] + ' 🪙';
+                ld.appendChild(ln); ld.appendChild(nd); ld.appendChild(gd); c.appendChild(ld);
             });
         }
 
-        // ============ BOULES — SVG sphère 3D ============
+        // ============ BOULES ============
 
-        /* Génère le markup SVG interne d'une boule */
-        function creerMarkupBoule(uid, texte, estInterrogation) {
-            return `
+        function creerSVGBoule(uid, texte, estInterrogation) {
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('viewBox', '0 0 100 100');
+            svg.setAttribute('class', 'boule-svg');
+
+            svg.innerHTML = `
                 <defs>
                     <radialGradient id="${uid}" cx="38%" cy="28%" r="68%">
                         <stop offset="0%" stop-color="#fffbe8"/>
@@ -1106,10 +975,7 @@
                         <feGaussianBlur in="SourceAlpha" stdDeviation="3.5"/>
                         <feOffset dx="0" dy="5"/>
                         <feComponentTransfer><feFuncA type="linear" slope="0.28"/></feComponentTransfer>
-                        <feMerge>
-                            <feMergeNode/>
-                            <feMergeNode in="SourceGraphic"/>
-                        </feMerge>
+                        <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
                     </filter>
                 </defs>
                 <ellipse cx="50" cy="91" rx="24" ry="5" fill="rgba(0,0,0,0.09)"/>
@@ -1118,78 +984,67 @@
                 <circle cx="36" cy="31" r="14" fill="url(#${uid}h)"/>
                 <circle cx="50" cy="48" r="17.5" fill="#5c3310" fill-opacity="0.88"/>
                 <circle cx="50" cy="48" r="15.5" fill="#fffaeb" fill-opacity="0.97"/>
-                <text x="50" y="49" class="boule-numero ${estInterrogation ? 'interrogation' : ''}">${texte}</text>
+                <text x="50" y="49" class="boule-chiffre ${estInterrogation ? 'interrogation' : ''}">${texte}</text>
             `;
+            return svg;
         }
 
-        /* Crée les petites étincelles qui éclatent autour d'une boule */
         function creerEtincelles(container) {
             const couleurs = ['#ffd700', '#fff8dc', '#ffec8b', '#daa520', '#ffe680', '#fff5cc'];
             for (let i = 0; i < 12; i++) {
-                const spark = document.createElement('div');
-                spark.className = 'etincelle';
+                const s = document.createElement('div'); s.className = 'etincelle';
                 const angle = (i / 12) * Math.PI * 2 + (Math.random() - 0.5) * 0.4;
                 const dist = 22 + Math.random() * 28;
-                spark.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
-                spark.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
-                spark.style.backgroundColor = couleurs[i % couleurs.length];
-                spark.style.left = '50%';
-                spark.style.top = '42%';
-                const taille = 3 + Math.random() * 4;
-                spark.style.width = taille + 'px';
-                spark.style.height = taille + 'px';
-                container.appendChild(spark);
-                setTimeout(() => { if (spark.parentNode) spark.remove(); }, 750);
+                s.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+                s.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+                s.style.backgroundColor = couleurs[i % couleurs.length];
+                s.style.left = '50%'; s.style.top = '42%';
+                const t = 3 + Math.random() * 4; s.style.width = t + 'px'; s.style.height = t + 'px';
+                container.appendChild(s);
+                setTimeout(() => { if (s.parentNode) s.remove(); }, 750);
             }
         }
 
-        /* Affiche les boules — phase roulement (tournante=true) ou révélation (false) */
         function afficherBoules(numeros, tournante) {
             const wrapper = document.getElementById('boulesWrapper');
 
             if (tournante) {
-                /* Phase 1 : les boules roulent depuis la gauche avec un "?" */
+                /* Phase 1 : créer les boules avec "?" et les faire rouler */
                 wrapper.innerHTML = '';
                 numeros.forEach((n, i) => {
                     const container = document.createElement('div');
                     container.className = 'boule-container';
-
                     const uid = 'bg' + i + '_' + Date.now();
-                    const temp = document.createElement('div');
-                    temp.innerHTML = '<svg viewBox="0 0 100 100" class="boule-svg">'
-                        + creerMarkupBoule(uid, '?', true)
-                        + '</svg>';
-                    container.appendChild(temp.firstElementChild);
+                    container.appendChild(creerSVGBoule(uid, '?', true));
                     wrapper.appendChild(container);
-
-                    /* Double rAF pour garantir que le navigateur a peint l'état initial
-                       avant d'ajouter la classe qui déclenche l'animation */
+                    /* Double rAF pour garantir l'état initial avant l'animation */
                     requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                            container.classList.add('rouler');
-                        });
+                        requestAnimationFrame(() => { container.classList.add('rouler'); });
                     });
                 });
             } else {
-                /* Phase 2 : révéler les numéros SANS recréer les boules */
+                /* Phase 2 : révéler les numéros dans les boules existantes */
                 const containers = wrapper.querySelectorAll('.boule-container');
                 containers.forEach((container, i) => {
                     if (i >= numeros.length) return;
+                    const svg = container.querySelector('svg');
+                    if (!svg) return;
 
-                    /* Remplacer le texte "?" par le vrai numéro */
-                    const oldText = container.querySelector('.boule-numero');
-                    if (oldText) {
-                        const newText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                        newText.setAttribute('x', '50');
-                        newText.setAttribute('y', '49');
-                        newText.setAttribute('class', 'boule-numero reveler');
-                        newText.setAttribute('text-anchor', 'middle');
-                        newText.setAttribute('dominant-baseline', 'middle');
-                        newText.textContent = numeros[i];
-                        oldText.parentNode.replaceChild(newText, oldText);
-                    }
+                    /* Retirer l'ancien texte "?" */
+                    const oldText = svg.querySelector('text.boule-chiffre');
+                    if (oldText) oldText.remove();
 
-                    /* Flash doré sur la boule entière */
+                    /* Créer le nouveau texte avec le numéro */
+                    const newText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    newText.setAttribute('x', '50');
+                    newText.setAttribute('y', '49');
+                    newText.setAttribute('class', 'boule-chiffre reveler');
+                    newText.setAttribute('text-anchor', 'middle');
+                    newText.setAttribute('dominant-baseline', 'middle');
+                    newText.textContent = numeros[i];
+                    svg.appendChild(newText);
+
+                    /* Flash doré sur la boule */
                     container.classList.add('revele');
 
                     /* Étincelles */
@@ -1201,307 +1056,177 @@
         // TIRER 3 BOULES
         function tirer3Boules() {
             if (etatJeu.partieTerminee || etatJeu.index >= 99 || etatJeu.enCours || !etatJeu.peutTirer) return;
-
-            etatJeu.enCours = true;
-            etatJeu.peutTirer = false;
-            const partieDuTirage = etatJeu.partieId;
-            etatJeu.tirageFinalise = false;
-            if (etatJeu.timerInterval) {
-                clearInterval(etatJeu.timerInterval);
-                etatJeu.timerInterval = null;
-            }
+            etatJeu.enCours = true; etatJeu.peutTirer = false;
+            const pid = etatJeu.partieId; etatJeu.tirageFinalise = false;
+            if (etatJeu.timerInterval) { clearInterval(etatJeu.timerInterval); etatJeu.timerInterval = null; }
             document.getElementById('btnTirage').disabled = true;
-
             etatJeu.boulesTirees = [];
             const numeros = [];
-            for (let i = 0; i < 3 && etatJeu.index < 99; i++) {
-                numeros.push(etatJeu.numeroRestants[etatJeu.index++]);
-            }
+            for (let i = 0; i < 3 && etatJeu.index < 99; i++) numeros.push(etatJeu.numeroRestants[etatJeu.index++]);
 
-            // Phase 1 : les boules roulent (3 secondes)
             afficherBoules(numeros, true);
             document.getElementById('grilleJoueurDiv').classList.add('tirage-actif');
             document.getElementById('grilleAdversaireDiv').classList.add('tirage-actif');
-
             jouerSon('whoosh');
 
             setTimeout(() => {
-                if (partieDuTirage !== etatJeu.partieId) return;
-
-                // Phase 2 : révélation des numéros
+                if (pid !== etatJeu.partieId) return;
                 afficherBoules(numeros, false);
                 document.getElementById('grilleJoueurDiv').classList.remove('tirage-actif');
                 document.getElementById('grilleAdversaireDiv').classList.remove('tirage-actif');
                 document.getElementById('grilleJoueurDiv').classList.add('validation-actif');
                 document.getElementById('grilleAdversaireDiv').classList.add('validation-actif');
-
                 jouerSon('ding');
-
                 etatJeu.boulesTirees = numeros;
 
-                const totalACocher = compterNumerosATirer();
-                if (totalACocher > 0) {
-                    mettreAJourCompteurCoches();
-                    demarrerTimer();
-                } else {
-                    afficherMessage('0 numéro à cocher', 'info');
-                    etatJeu.timerActif = false;
-                    finirTirage(false, 500);
-                }
+                const total = compterNumerosATirer();
+                if (total > 0) { mettreAJourCompteurCoches(); demarrerTimer(); }
+                else { afficherMessage('0 numéro à cocher', 'info'); etatJeu.timerActif = false; finirTirage(false, 500); }
 
                 etatJeu.enCours = false;
 
-                // Le robot réfléchit 3 secondes avant de cocher ses numéros
+                /* Robot : 3 secondes de réflexion avant de cocher */
                 if (!etatJeu.partieTerminee) {
-                    const robotPartieId = partieDuTirage;
+                    const rpid = pid;
                     setTimeout(() => {
-                        if (robotPartieId !== etatJeu.partieId) return;
-                        cocherRobot(numeros);
-                        verifierLignesCompletes();
-                        mettreAJourStats();
+                        if (rpid !== etatJeu.partieId) return;
+                        cocherRobot(numeros); verifierLignesCompletes(); mettreAJourStats();
                     }, 3000);
                 }
             }, 3000);
         }
 
-        // HIGHLIGHT NUMÉROS DU TIRAGE
-        function highlightTirees(numeros) {
-            [etatJeu.grilleJoueur, etatJeu.grilleAdversaire].forEach((grille, isAdv) => {
-                const elementId = isAdv ? 'grilleAdversaire' : 'grilleJoueur';
-                grille.forEach((ligne, ligneIdx) => {
-                    numeros.forEach(n => {
-                        const cases = document.querySelectorAll(`#nums${elementId}${ligneIdx} [data-numero="${n}"]`);
-                        cases.forEach(c => c.classList.add('tirages'));
-                    });
-                });
-            });
-        }
-
-        // COMPTEUR DES NUMÉROS À COCHER
         function compterNumerosATirer() {
-            return etatJeu.grilleJoueur.reduce((total, ligne) => {
-                return total + etatJeu.boulesTirees.filter(n => ligne.numeros.includes(n)).length;
-            }, 0);
+            return etatJeu.grilleJoueur.reduce((t, l) => t + etatJeu.boulesTirees.filter(n => l.numeros.includes(n)).length, 0);
         }
-
         function compterNumerosCoches() {
-            return etatJeu.grilleJoueur.reduce((total, ligne) => {
-                return total + etatJeu.boulesTirees.filter(n => ligne.numeros.includes(n) && ligne.checked.has(n)).length;
-            }, 0);
+            return etatJeu.grilleJoueur.reduce((t, l) => t + etatJeu.boulesTirees.filter(n => l.numeros.includes(n) && l.checked.has(n)).length, 0);
         }
-
         function mettreAJourCompteurCoches() {
             const total = compterNumerosATirer();
             const restant = Math.max(0, total - compterNumerosCoches());
-            const libelle = restant === 1 ? 'numéro à cocher' : 'numéros à cocher';
-            afficherMessage(`${restant} ${libelle}`, restant === 0 ? 'victoire' : 'info');
+            afficherMessage(restant + (restant === 1 ? ' numéro à cocher' : ' numéros à cocher'), restant === 0 ? 'victoire' : 'info');
         }
-
         function verifierCochageComplet() {
             if (!etatJeu.timerActif || etatJeu.tirageFinalise) return;
-            const total = compterNumerosATirer();
-            const coches = compterNumerosCoches();
-            if (total > 0 && coches === total) {
-                finirTirage(false, 0);
-            }
+            const total = compterNumerosATirer(), coches = compterNumerosCoches();
+            if (total > 0 && coches === total) finirTirage(false, 0);
         }
 
-        // TIMER 45s
         function demarrerTimer() {
-            etatJeu.timerActif = true;
-            let temps = 45;
+            etatJeu.timerActif = true; let temps = 45;
             document.getElementById('timerZone').innerHTML = '<div class="timer ok">⏱️ 45s</div>';
-
             etatJeu.timerInterval = setInterval(() => {
                 temps--;
-                const timerZone = document.getElementById('timerZone');
-                let className = 'timer ok';
-                if (temps <= 15) className = 'timer mid';
-                if (temps <= 5) className = 'timer';
-                timerZone.innerHTML = `<div class="${className}">⏱️ ${temps}s</div>`;
-
-                if (temps <= 0) {
-                    finirTirage(true, 0);
-                }
+                let cls = 'timer ok'; if (temps <= 15) cls = 'timer mid'; if (temps <= 5) cls = 'timer';
+                document.getElementById('timerZone').innerHTML = '<div class="' + cls + '">⏱️ ' + temps + 's</div>';
+                if (temps <= 0) finirTirage(true, 0);
             }, 1000);
         }
 
         function cocherAutomatiquementLesBonsNumeros() {
-            etatJeu.grilleJoueur.forEach((ligne, ligneIdx) => {
+            etatJeu.grilleJoueur.forEach((ligne, li) => {
                 etatJeu.boulesTirees.forEach(n => {
                     if (ligne.numeros.includes(n)) {
                         ligne.checked.add(n);
-                        const cases = document.querySelectorAll(`#numsGrilleJoueur${ligneIdx} [data-numero="${n}"]`);
-                        cases.forEach(c => c.classList.add('checked'));
+                        document.querySelectorAll('#numsGrilleJoueur' + li + ' [data-numero="' + n + '"]').forEach(c => c.classList.add('checked'));
                     }
                 });
             });
             verifierLignesCompletes();
         }
 
-        // FINIR TIRAGE
-        function finirTirage(cocherAuto = false, delaiReinitialisation = 0) {
+        function finirTirage(cocherAuto, delai) {
             if (etatJeu.tirageFinalise || etatJeu.partieTerminee) return;
-            etatJeu.tirageFinalise = true;
-            etatJeu.timerActif = false;
-
-            if (etatJeu.timerInterval) {
-                clearInterval(etatJeu.timerInterval);
-                etatJeu.timerInterval = null;
-            }
-
+            etatJeu.tirageFinalise = true; etatJeu.timerActif = false;
+            if (etatJeu.timerInterval) { clearInterval(etatJeu.timerInterval); etatJeu.timerInterval = null; }
             if (cocherAuto) cocherAutomatiquementLesBonsNumeros();
-
             document.getElementById('grilleJoueurDiv').classList.remove('validation-actif');
             document.getElementById('grilleAdversaireDiv').classList.remove('validation-actif');
             document.getElementById('timerZone').innerHTML = '';
-
             validerCoches();
-            const totalACocher = compterNumerosATirer();
-            if (cocherAuto) {
-                afficherMessage('Temps écoulé : coches automatiques', 'info');
-            } else if (totalACocher === 0) {
-                afficherMessage('Aucun numéro à cocher', 'info');
-            } else {
-                afficherMessage('Bien coché!', 'victoire');
-            }
+            const total = compterNumerosATirer();
+            if (cocherAuto) afficherMessage('Temps écoulé : coches automatiques', 'info');
+            else if (total === 0) afficherMessage('Aucun numéro à cocher', 'info');
+            else afficherMessage('Bien coché!', 'victoire');
 
-            const reinitialiser = () => {
-                etatJeu.peutTirer = true;
-                document.getElementById('btnTirage').disabled = false;
-
+            const reset = () => {
+                etatJeu.peutTirer = true; document.getElementById('btnTirage').disabled = false;
                 afficherGrille(etatJeu.grilleJoueur, 'grilleJoueur');
                 afficherGrille(etatJeu.grilleAdversaire, 'grilleAdversaire', true);
                 mettreAJourStats();
-
-                if (etatJeu.index >= 99 && !etatJeu.partieTerminee) {
-                    terminerPartie(null);
-                }
+                if (etatJeu.index >= 99 && !etatJeu.partieTerminee) terminerPartie(null);
             };
-
-            if (delaiReinitialisation > 0) setTimeout(reinitialiser, delaiReinitialisation);
-            else reinitialiser();
+            if (delai > 0) setTimeout(reset, delai); else reset();
         }
 
-        // COCHER ROBOT
         function cocherRobot(numeros) {
-            etatJeu.grilleAdversaire.forEach((ligne, ligneIdx) => {
+            etatJeu.grilleAdversaire.forEach((ligne, li) => {
                 numeros.forEach(n => {
                     if (ligne.numeros.includes(n)) {
-                        const cases = document.querySelectorAll(`#numsGrilleAdversaire${ligneIdx} [data-numero="${n}"]`);
-                        cases.forEach(c => c.classList.add('checked-bot'));
+                        document.querySelectorAll('#numsGrilleAdversaire' + li + ' [data-numero="' + n + '"]').forEach(c => c.classList.add('checked-bot'));
                         ligne.checked.add(n);
                     }
                 });
             });
         }
 
-        // VALIDER LES COCHES DU TIRAGE COURANT
         function validerCoches() {
-            const tousCoches = etatJeu.grilleJoueur.every(ligne =>
-                etatJeu.boulesTirees
-                    .filter(n => ligne.numeros.includes(n))
-                    .every(n => ligne.checked.has(n))
-            );
-            etatJeu.peutTirer = tousCoches;
-            return tousCoches;
+            const ok = etatJeu.grilleJoueur.every(l => etatJeu.boulesTirees.filter(n => l.numeros.includes(n)).every(n => l.checked.has(n)));
+            etatJeu.peutTirer = ok; return ok;
         }
 
-        function terminerPartie(gagnant = null) {
+        function terminerPartie(gagnant) {
             if (etatJeu.partieTerminee) return;
-            etatJeu.partieTerminee = true;
-            etatJeu.peutTirer = false;
-            etatJeu.enCours = false;
-            etatJeu.timerActif = false;
-            etatJeu.tirageFinalise = true;
-            etatJeu.partieId++;
-            if (etatJeu.timerInterval) {
-                clearInterval(etatJeu.timerInterval);
-                etatJeu.timerInterval = null;
-            }
+            etatJeu.partieTerminee = true; etatJeu.peutTirer = false; etatJeu.enCours = false;
+            etatJeu.timerActif = false; etatJeu.tirageFinalise = true; etatJeu.partieId++;
+            if (etatJeu.timerInterval) { clearInterval(etatJeu.timerInterval); etatJeu.timerInterval = null; }
             document.getElementById('btnTirage').disabled = true;
             document.getElementById('timerZone').innerHTML = '';
             document.getElementById('grilleJoueurDiv').classList.remove('tirage-actif', 'validation-actif');
             document.getElementById('grilleAdversaireDiv').classList.remove('tirage-actif', 'validation-actif');
-            if (gagnant === 'joueur') {
-                afficherMessage('Grille complète ! Bravo à vous !', 'victoire');
-                jouerSon('bingo');
-            } else if (gagnant === 'robot') {
-                afficherMessage('Grille complète ! Bravo au robot !', 'defaite');
-            } else {
-                afficherMessage('Les 99 numéros ont été tirés. Partie terminée !', 'info');
-            }
+            if (gagnant === 'joueur') { afficherMessage('Grille complète ! Bravo !', 'victoire'); jouerSon('bingo'); }
+            else if (gagnant === 'robot') afficherMessage('Grille complète ! Bravo au robot !', 'defaite');
+            else afficherMessage('Les 99 numéros ont été tirés. Partie terminée !', 'info');
             mettreAJourStats();
         }
 
-        // PAYER UNE LIGNE UNIQUEMENT LORSQU'ELLE EST RÉELLEMENT COCHÉE
         function verifierLignesCompletes() {
             const gains = [5, 10, 15];
             [etatJeu.grilleJoueur, etatJeu.grilleAdversaire].forEach((grille, isAdv) => {
-                grille.forEach((ligne, ligneIdx) => {
+                grille.forEach((ligne, li) => {
                     if (!ligne.gagnee && ligne.numeros.every(n => ligne.checked.has(n))) {
-                        ligne.gagnee = true;
-                        ligne.matching = [...ligne.numeros];
-                        const gain = gains[ligneIdx];
-                        if (isAdv) {
-                            etatJeu.gainAdversaire += gain;
-                            etatJeu.lignesAdversaire++;
-                            afficherMessage(`🤖 Ligne ${ligneIdx + 1} complète : +${gain} pièces`, 'defaite');
-                        } else {
-                            etatJeu.gainJoueur += gain;
-                            etatJeu.lignesJoueur++;
-                            afficherMessage(`🎉 Ligne ${ligneIdx + 1} complète : +${gain} pièces`, 'victoire');
-                            jouerSon('bingo');
-                            crediterGainProfil(gain, ligneIdx);
-                        }
+                        ligne.gagnee = true; ligne.matching = [...ligne.numeros];
+                        const g = gains[li];
+                        if (isAdv) { etatJeu.gainAdversaire += g; etatJeu.lignesAdversaire++; afficherMessage('🤖 Ligne ' + (li+1) + ' : +' + g + ' pièces', 'defaite'); }
+                        else { etatJeu.gainJoueur += g; etatJeu.lignesJoueur++; afficherMessage('🎉 Ligne ' + (li+1) + ' : +' + g + ' pièces', 'victoire'); jouerSon('bingo'); crediterGainProfil(g, li); }
                         mettreAJourStats();
                     }
                 });
             });
-
-            const joueurComplet = etatJeu.grilleJoueur.every(ligne => ligne.numeros.every(n => ligne.checked.has(n)));
-            const robotComplet = etatJeu.grilleAdversaire.every(ligne => ligne.numeros.every(n => ligne.checked.has(n)));
-            if (joueurComplet) terminerPartie('joueur');
-            else if (robotComplet) terminerPartie('robot');
+            const jOk = etatJeu.grilleJoueur.every(l => l.numeros.every(n => l.checked.has(n)));
+            const rOk = etatJeu.grilleAdversaire.every(l => l.numeros.every(n => l.checked.has(n)));
+            if (jOk) terminerPartie('joueur'); else if (rOk) terminerPartie('robot');
         }
 
-        // MESSAGE
-        function afficherMessage(msg, type = 'info') {
-            const zone = document.getElementById('messageZone');
-            zone.innerHTML = `<div class="message ${type}">${msg}</div>`;
+        function afficherMessage(msg, type) {
+            document.getElementById('messageZone').innerHTML = '<div class="message ' + (type || 'info') + '">' + msg + '</div>';
         }
 
-        // MISE À JOUR STATS
         function mettreAJourStats() {
             document.getElementById('gainJoueur').textContent = etatJeu.gainJoueur + ' 🪙';
-
-            const percentBoules = (etatJeu.index / 99) * 100;
-
-            document.getElementById('progBoules').style.width = percentBoules + '%';
+            document.getElementById('progBoules').style.width = (etatJeu.index / 99 * 100) + '%';
             document.getElementById('textBoules').textContent = etatJeu.index + '/99';
         }
 
-        // NOUVELLE PARTIE / NOUVELLE GRILLE
         function nouvelleGrille() {
             etatJeu.partieId++;
-            if (etatJeu.timerInterval) {
-                clearInterval(etatJeu.timerInterval);
-                etatJeu.timerInterval = null;
-            }
-
-            etatJeu.grilleJoueur = genererGrille();
-            etatJeu.grilleAdversaire = genererGrille();
+            if (etatJeu.timerInterval) { clearInterval(etatJeu.timerInterval); etatJeu.timerInterval = null; }
+            etatJeu.grilleJoueur = genererGrille(); etatJeu.grilleAdversaire = genererGrille();
             etatJeu.numeroRestants = Array.from({length: 99}, (_, i) => i + 1).sort(() => Math.random() - 0.5);
-            etatJeu.index = 0;
-            etatJeu.lignesJoueur = 0;
-            etatJeu.lignesAdversaire = 0;
-            etatJeu.enCours = false;
-            etatJeu.boulesTirees = [];
-            etatJeu.timerActif = false;
-            etatJeu.tirageFinalise = false;
-            etatJeu.peutTirer = true;
-            etatJeu.partieTerminee = false;
-
+            etatJeu.index = 0; etatJeu.lignesJoueur = 0; etatJeu.lignesAdversaire = 0;
+            etatJeu.enCours = false; etatJeu.boulesTirees = []; etatJeu.timerActif = false;
+            etatJeu.tirageFinalise = false; etatJeu.peutTirer = true; etatJeu.partieTerminee = false;
             document.getElementById('grilleJoueurDiv').classList.remove('tirage-actif', 'validation-actif');
             document.getElementById('grilleAdversaireDiv').classList.remove('tirage-actif', 'validation-actif');
             afficherGrille(etatJeu.grilleJoueur, 'grilleJoueur');
@@ -1509,11 +1234,9 @@
             document.getElementById('btnTirage').disabled = false;
             document.getElementById('timerZone').innerHTML = '';
             document.getElementById('boulesWrapper').innerHTML = '';
-            mettreAJourStats();
-            afficherMessage('Nouvelle grille prête !', 'info');
+            mettreAJourStats(); afficherMessage('Nouvelle grille prête !', 'info');
         }
 
-        // INITIALISATION
         function initialiser() {
             afficherGrille(etatJeu.grilleJoueur, 'grilleJoueur');
             afficherGrille(etatJeu.grilleAdversaire, 'grilleAdversaire', true);
@@ -1521,31 +1244,20 @@
             document.getElementById('timerZone').innerHTML = '';
             document.getElementById('messageZone').innerHTML = '';
             document.getElementById('boulesWrapper').innerHTML = '';
-            mettreAJourStats();
-            afficherMessage('Bonne chance !', 'info');
+            mettreAJourStats(); afficherMessage('Bonne chance !', 'info');
         }
 
-        // EVENT LISTENERS
         document.getElementById('btnTirage').addEventListener('click', tirer3Boules);
         document.getElementById('btnNouvelleGrille').addEventListener('click', nouvelleGrille);
-
         document.getElementById('btnChangerProfil').addEventListener('click', () => {
             localStorage.removeItem(CLE_MODE_ANONYME);
             window.location.href = 'https://pierreg78-maker.github.io/vitrine-enchantee/profil-demo.html';
         });
-
         document.getElementById('btnJouerAnonyme').addEventListener('click', () => {
-            modeAnonyme = true;
-            localStorage.setItem(CLE_MODE_ANONYME, '1');
-            profilActif = null;
-            afficherProfil();
+            modeAnonyme = true; localStorage.setItem(CLE_MODE_ANONYME, '1'); profilActif = null; afficherProfil();
         });
 
-        // DÉMARRAGE
-        (async function () {
-            await actualiserProfilDepuisServeur();
-            initialiser();
-        })();
+        (async function () { await actualiserProfilDepuisServeur(); initialiser(); })();
     </script>
 </body>
 </html>
