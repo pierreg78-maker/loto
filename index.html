@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loto Bingo</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', 'Georgia', serif;
@@ -29,21 +25,21 @@
             width: min(100%, 760px);
             margin: 0 auto;
         }
-        .retour {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 26px;
-      padding: 0 5px;
-      border-radius: 999px;
-      background: var(--bleu);
-      color: white;
-      text-decoration: none;
-      font-weight: 800;
-      box-shadow: 0 3px 7px rgba(30, 74, 117, .22);
-    }
 
-        /* HEADER */
+        .retour {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 26px;
+            padding: 0 5px;
+            border-radius: 999px;
+            background: var(--bleu);
+            color: white;
+            text-decoration: none;
+            font-weight: 800;
+            box-shadow: 0 3px 7px rgba(30, 74, 117, .22);
+        }
+
         .header {
             text-align: center;
             margin-bottom: 12px;
@@ -61,7 +57,6 @@
             text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
         }
 
-        /* GRILLES */
         .grille-joueur, .grille-adversaire {
             background: white;
             padding: 12px;
@@ -72,22 +67,15 @@
             transition: background-color 0.3s ease;
         }
 
-        .grille-joueur.tirage-actif {
-            background: #e8f8f5;
-        }
-
-        .grille-joueur.validation-actif {
-            background: #f0fff4;
-        }
+        .grille-joueur.tirage-actif { background: #e8f8f5; }
+        .grille-joueur.validation-actif { background: #f0fff4; }
 
         .grille-adversaire {
             border-top: 3px solid #3498db;
             transition: background-color 0.3s ease;
         }
 
-        .grille-adversaire.tirage-actif {
-            background: #ebf5fb;
-        }
+        .grille-adversaire.tirage-actif { background: #ebf5fb; }
 
         .titre-grille {
             font-size: 0.95em;
@@ -97,11 +85,8 @@
             color: #2ecc71;
         }
 
-        .grille-adversaire .titre-grille {
-            color: #3498db;
-        }
+        .grille-adversaire .titre-grille { color: #3498db; }
 
-        /* LIGNES DE JEU */
         .ligne {
             margin-bottom: 10px;
             display: flex;
@@ -156,14 +141,8 @@
             box-shadow: inset 0 1px 3px rgba(0,0,0,.35);
         }
 
-        .tirage-actif .numero-case {
-            background: #f9f9f9;
-            color: #aaa;
-        }
-
-        .validation-actif .numero-case {
-            color: #3d3220;
-        }
+        .tirage-actif .numero-case { background: #f9f9f9; color: #aaa; }
+        .validation-actif .numero-case { color: #3d3220; }
 
         .numero-case.checked {
             background: #f5f5f5;
@@ -199,12 +178,9 @@
             pointer-events: none;
         }
 
-        .numero-case.erreur {
-            background: #fadbd8;
-            border-color: #e74c3c;
-        }
+        .numero-case.erreur { background: #fadbd8; border-color: #e74c3c; }
 
-        /* ============ BOULES — SPHÈRES 3D ROULANTES ============ */
+        /* ===== BOULES 3D ROULANTES ===== */
         .boules-wrapper {
             display: flex;
             justify-content: center;
@@ -248,34 +224,28 @@
         }
 
         .boule-container.rouler {
-            animation: roulerBoule 1.35s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+            animation: roulerBoule 1.4s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
         }
 
-        .boule-container:nth-child(2).rouler {
-            animation-delay: 0.22s;
-        }
+        .boule-container:nth-child(2).rouler { animation-delay: 0.22s; }
+        .boule-container:nth-child(3).rouler { animation-delay: 0.44s; }
 
-        .boule-container:nth-child(3).rouler {
-            animation-delay: 0.44s;
-        }
-
+        /* 720° = 2 tours complets → le reflet revient exactement à sa place */
         @keyframes roulerBoule {
             0% {
                 opacity: 0;
                 transform: translateX(-95px) translateY(18px) rotate(0deg) scale(0.25);
             }
-            12% {
-                opacity: 1;
+            12% { opacity: 1; }
+            55% {
+                transform: translateX(8px) translateY(-12px) rotate(680deg) scale(1.15);
             }
-            62% {
-                transform: translateX(7px) translateY(-10px) rotate(780deg) scale(1.14);
-            }
-            80% {
-                transform: translateX(-5px) translateY(4px) rotate(910deg) scale(0.93);
+            75% {
+                transform: translateX(-4px) translateY(3px) rotate(740deg) scale(0.94);
             }
             100% {
                 opacity: 1;
-                transform: translateX(0) translateY(0) rotate(960deg) scale(1);
+                transform: translateX(0) translateY(0) rotate(720deg) scale(1);
             }
         }
 
@@ -284,21 +254,12 @@
         }
 
         @keyframes flashRevelation {
-            0% {
-                filter: brightness(1.7) drop-shadow(0 0 20px rgba(255,215,0,0.85));
-            }
-            100% {
-                filter: brightness(1) drop-shadow(0 0 0 transparent);
-            }
+            0% { filter: brightness(1.7) drop-shadow(0 0 20px rgba(255,215,0,0.85)); }
+            100% { filter: brightness(1) drop-shadow(0 0 0 transparent); }
         }
 
-        .boule-svg {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
+        .boule-svg { width: 100%; height: 100%; display: block; }
 
-        /* Sélecteur spécifique pour éviter les conflits */
         svg text.boule-chiffre {
             font-weight: 900;
             font-size: 26px;
@@ -320,18 +281,8 @@
         }
 
         @keyframes numeroApparaitre {
-            0% {
-                opacity: 0;
-                transform: scale(2.8);
-                transform-origin: center;
-                transform-box: fill-box;
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-                transform-origin: center;
-                transform-box: fill-box;
-            }
+            0% { opacity: 0; transform: scale(2.8); transform-origin: center; transform-box: fill-box; }
+            100% { opacity: 1; transform: scale(1); transform-origin: center; transform-box: fill-box; }
         }
 
         .etincelle {
@@ -343,14 +294,8 @@
         }
 
         @keyframes etinceler {
-            0% {
-                transform: translate(-50%, -50%) scale(1.3);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0);
-                opacity: 0;
-            }
+            0% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+            100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0); opacity: 0; }
         }
 
         /* TIMER */
@@ -363,19 +308,9 @@
             margin: 0;
         }
 
-        .timer {
-            font-size: 1.8em;
-            font-weight: 700;
-            color: #e74c3c;
-        }
-
-        .timer.mid {
-            color: #f39c12;
-        }
-
-        .timer.ok {
-            color: #2ecc71;
-        }
+        .timer { font-size: 1.8em; font-weight: 700; color: #e74c3c; }
+        .timer.mid { color: #f39c12; }
+        .timer.ok { color: #2ecc71; }
 
         /* MESSAGE */
         .message-zone {
@@ -387,17 +322,9 @@
             margin: 0;
         }
 
-        .message.victoire {
-            color: #2ecc71;
-        }
-
-        .message.defaite {
-            color: #e74c3c;
-        }
-
-        .message.info {
-            color: #3498db;
-        }
+        .message.victoire { color: #2ecc71; }
+        .message.defaite { color: #e74c3c; }
+        .message.info { color: #3498db; }
 
         /* BOUTON TIRER */
         .tirage-panel {
@@ -451,14 +378,8 @@
             box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6), inset -2px -2px 5px rgba(0, 0, 0, 0.3);
         }
 
-        .btn-tirer:active:not(:disabled) {
-            transform: scale(0.95);
-        }
-
-        .btn-tirer:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+        .btn-tirer:active:not(:disabled) { transform: scale(0.95); }
+        .btn-tirer:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .btn-nouvelle-grille {
             width: 88px;
@@ -481,12 +402,8 @@
         .btn-nouvelle-grille:active:not(:disabled) { transform: scale(.96); }
         .btn-nouvelle-grille:disabled { opacity: .5; cursor: not-allowed; }
 
-        /* STATS EN BAS */
-        .stats-section {
-            margin-top: 0;
-            padding-top: 0;
-            border-top: none;
-        }
+        /* STATS */
+        .stats-section { margin-top: 0; padding-top: 0; border-top: none; }
 
         .progression-container {
             display: grid;
@@ -530,11 +447,7 @@
             background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
         }
 
-        .progression-text {
-            font-size: 0.75em;
-            color: #666;
-            font-weight: 600;
-        }
+        .progression-text { font-size: 0.75em; color: #666; font-weight: 600; }
 
         .gains-container {
             display: grid;
@@ -550,26 +463,10 @@
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
         }
 
-        .gain-label {
-            font-size: 0.7em;
-            color: #999;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-        }
-
-        .gain-value {
-            font-size: 1.6em;
-            font-weight: 700;
-            color: #d4a574;
-        }
-
-        .gain-card.vous {
-            border-left: 3px solid #2ecc71;
-        }
-
-        .gain-card.adversaire {
-            border-left: 3px solid #3498db;
-        }
+        .gain-label { font-size: 0.7em; color: #999; text-transform: uppercase; margin-bottom: 4px; }
+        .gain-value { font-size: 1.6em; font-weight: 700; color: #d4a574; }
+        .gain-card.vous { border-left: 3px solid #2ecc71; }
+        .gain-card.adversaire { border-left: 3px solid #3498db; }
 
         .stats-row {
             display: grid;
@@ -578,11 +475,7 @@
             align-items: stretch;
         }
 
-        .stats-row .btn-nouvelle-grille {
-            width: 100%;
-            min-height: 64px;
-            align-self: stretch;
-        }
+        .stats-row .btn-nouvelle-grille { width: 100%; min-height: 64px; align-self: stretch; }
 
         .stats-row .progression-item,
         .stats-row .gain-card {
@@ -594,7 +487,7 @@
             justify-content: center;
         }
 
-        /* PROFIL ACTIF ET PORTE-MONNAIE */
+        /* PROFIL */
         .profil-barre{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:8px;color:#fff;font-weight:700;font-size:.9em}
         .profil-badge,.solde-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35)}
         .profil-alerte{display:none;background:#fff3cd;border:2px solid #e0ad32;color:#664d03;border-radius:12px;padding:12px;margin-bottom:10px;text-align:center;font-weight:700}
@@ -631,14 +524,8 @@
             box-shadow: 0 7px 17px rgba(201, 54, 120, .42), inset 0 1px 0 rgba(255,255,255,.4);
         }
 
-        .btn-vitrine:active {
-            transform: scale(.96);
-        }
-
-        .btn-vitrine .etoile {
-            font-size: 1.2em;
-            line-height: 1;
-        }
+        .btn-vitrine:active { transform: scale(.96); }
+        .btn-vitrine .etoile { font-size: 1.2em; line-height: 1; }
 
         /* RESPONSIVE */
         @media (max-width: 520px) {
@@ -669,22 +556,13 @@
             .stats-row .progression-label, .stats-row .gain-label { font-size: .54em; letter-spacing: 0; }
             .stats-row .progression-text { font-size: .65em; }
             .stats-row .gain-value { font-size: 1.05em; }
+
             @keyframes roulerBoule {
-                0% {
-                    opacity: 0;
-                    transform: translateX(-70px) translateY(14px) rotate(0deg) scale(0.25);
-                }
+                0% { opacity: 0; transform: translateX(-70px) translateY(14px) rotate(0deg) scale(0.25); }
                 12% { opacity: 1; }
-                62% {
-                    transform: translateX(5px) translateY(-7px) rotate(780deg) scale(1.12);
-                }
-                80% {
-                    transform: translateX(-3px) translateY(3px) rotate(910deg) scale(0.93);
-                }
-                100% {
-                    opacity: 1;
-                    transform: translateX(0) translateY(0) rotate(960deg) scale(1);
-                }
+                55% { transform: translateX(5px) translateY(-8px) rotate(680deg) scale(1.12); }
+                75% { transform: translateX(-3px) translateY(2px) rotate(740deg) scale(0.93); }
+                100% { opacity: 1; transform: translateX(0) translateY(0) rotate(720deg) scale(1); }
             }
         }
 
@@ -759,317 +637,292 @@
     </div>
 
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbyh1LbQNETMy0GS7A5SzACTPMYlFEal9W3-XZozkwzIkAAUhlo_InN-5FOrI9eEqPoEeA/exec';
-        const CLE_PROFIL = 'vitrineProfilActif';
-        const CLE_MODE_ANONYME = 'lotoModeAnonyme';
-        let profilActif = null;
-        let modeAnonyme = false;
+        var API_URL = 'https://script.google.com/macros/s/AKfycbyh1LbQNETMy0GS7A5SzACTPMYlFEal9W3-XZozkwzIkAAUhlo_InN-5FOrI9eEqPoEeA/exec';
+        var CLE_PROFIL = 'vitrineProfilActif';
+        var CLE_MODE_ANONYME = 'lotoModeAnonyme';
+        var profilActif = null;
+        var modeAnonyme = false;
 
         function lireProfilActif() {
             try {
-                const profil = JSON.parse(localStorage.getItem(CLE_PROFIL) || 'null');
-                return profil && profil.id ? profil : null;
-            } catch (e) {
-                localStorage.removeItem(CLE_PROFIL);
-                return null;
-            }
+                var p = JSON.parse(localStorage.getItem(CLE_PROFIL) || 'null');
+                return p && p.id ? p : null;
+            } catch (e) { localStorage.removeItem(CLE_PROFIL); return null; }
         }
 
         function sauvegarderProfilActif(profil) {
-            profilActif = {
-                id: profil.id,
-                prenom: profil.prenom,
-                piecesOr: Number(profil.piecesOr ?? profil.solde ?? 0)
-            };
+            profilActif = { id: profil.id, prenom: profil.prenom, piecesOr: Number(profil.piecesOr || profil.solde || 0) };
             localStorage.setItem(CLE_PROFIL, JSON.stringify(profilActif));
             afficherProfil();
         }
 
         function afficherProfil() {
-            const alerte = document.getElementById('profilAlerte');
+            var a = document.getElementById('profilAlerte');
             if (modeAnonyme) {
                 document.getElementById('profilNom').textContent = 'Joueur anonyme';
                 document.getElementById('profilNom').classList.add('mode-anonyme');
                 document.getElementById('profilSolde').textContent = '—';
-                alerte.classList.remove('visible');
-                return;
+                a.classList.remove('visible'); return;
             }
             document.getElementById('profilNom').classList.remove('mode-anonyme');
             if (!profilActif) {
                 document.getElementById('profilNom').textContent = 'Aucun profil';
                 document.getElementById('profilSolde').textContent = '0';
-                alerte.classList.add('visible');
-                return;
+                a.classList.add('visible'); return;
             }
             document.getElementById('profilNom').textContent = profilActif.prenom;
             document.getElementById('profilSolde').textContent = Math.trunc(Number(profilActif.piecesOr) || 0);
-            alerte.classList.remove('visible');
+            a.classList.remove('visible');
         }
 
-        async function actualiserProfilDepuisServeur() {
+        function actualiserProfilDepuisServeur() {
             modeAnonyme = localStorage.getItem(CLE_MODE_ANONYME) === '1';
-            if (modeAnonyme) { profilActif = null; afficherProfil(); return true; }
-            profilActif = lireProfilActif();
-            afficherProfil();
-            if (!profilActif) return true;
-            try {
-                const url = new URL(API_URL);
-                url.searchParams.set('action', 'obtenirProfil');
-                url.searchParams.set('id', profilActif.id);
-                url.searchParams.set('_', Date.now());
-                const r = await fetch(url, { method: 'GET', cache: 'no-store' });
-                const res = await r.json();
-                if (!res.ok || !res.profil) throw new Error(res.erreur || 'Profil introuvable.');
-                sauvegarderProfilActif(res.profil);
-                return true;
-            } catch (e) {
-                afficherMessage('Impossible d\'actualiser le profil.', 'defaite');
-                return false;
-            }
+            if (modeAnonyme) { profilActif = null; afficherProfil(); return Promise.resolve(true); }
+            profilActif = lireProfilActif(); afficherProfil();
+            if (!profilActif) return Promise.resolve(true);
+            var url = new URL(API_URL);
+            url.searchParams.set('action', 'obtenirProfil');
+            url.searchParams.set('id', profilActif.id);
+            url.searchParams.set('_', Date.now());
+            return fetch(url, { method: 'GET', cache: 'no-store' })
+                .then(function(r) { return r.json(); })
+                .then(function(res) {
+                    if (!res.ok || !res.profil) throw new Error(res.erreur || 'Profil introuvable.');
+                    sauvegarderProfilActif(res.profil); return true;
+                })
+                .catch(function(e) { afficherMessage('Impossible d\'actualiser le profil.', 'defaite'); return false; });
         }
 
-        function creerTransactionGain(ligneIndex) {
-            return ['loto', profilActif.id, etatJeu.sessionId, etatJeu.partieId, 'ligne', ligneIndex + 1].join('-');
+        function creerTransactionGain(li) {
+            return ['loto', profilActif.id, etatJeu.sessionId, etatJeu.partieId, 'ligne', li + 1].join('-');
         }
 
-        async function crediterGainProfil(montant, ligneIndex) {
+        function crediterGainProfil(montant, li) {
             if (modeAnonyme || !profilActif) {
-                afficherMessage('🎉 +' + montant + ' pièces gagnées (non enregistrées)', 'victoire');
-                return true;
+                afficherMessage('+' + montant + ' pièces gagnées (non enregistrées)', 'victoire'); return Promise.resolve(true);
             }
-            const gainEl = document.getElementById('gainJoueur');
-            gainEl.classList.add('gain-envoi');
-            try {
-                const r = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({
-                        action: 'gain', profilId: profilActif.id, montant: montant,
-                        jeu: 'Loto Bingo', commentaire: 'Ligne ' + (ligneIndex + 1) + ' complétée',
-                        transactionId: creerTransactionGain(ligneIndex)
-                    })
-                });
-                const res = await r.json();
+            var g = document.getElementById('gainJoueur'); g.classList.add('gain-envoi');
+            return fetch(API_URL, {
+                method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: 'gain', profilId: profilActif.id, montant: montant, jeu: 'Loto Bingo', commentaire: 'Ligne ' + (li+1), transactionId: creerTransactionGain(li) })
+            }).then(function(r) { return r.json(); }).then(function(res) {
                 if (!res.ok) throw new Error(res.erreur || 'Gain non enregistré.');
                 if (res.profil) sauvegarderProfilActif(res.profil);
-                else if (Number.isFinite(Number(res.nouveauSolde))) {
-                    profilActif.piecesOr = Number(res.nouveauSolde);
-                    sauvegarderProfilActif(profilActif);
-                }
-                afficherMessage(res.dejaEnregistre ? 'Gain déjà enregistré.' : '🎉 +' + montant + ' pièces pour ' + profilActif.prenom, 'victoire');
+                else if (Number.isFinite(Number(res.nouveauSolde))) { profilActif.piecesOr = Number(res.nouveauSolde); sauvegarderProfilActif(profilActif); }
+                afficherMessage(res.dejaEnregistre ? 'Gain déjà enregistré.' : '+' + montant + ' pièces pour ' + profilActif.prenom, 'victoire');
                 return true;
-            } catch (e) {
-                afficherMessage('⚠️ Gain non enregistré : ' + e.message, 'defaite');
-                return false;
-            } finally { gainEl.classList.remove('gain-envoi'); }
+            }).catch(function(e) { afficherMessage('Gain non enregistré : ' + e.message, 'defaite'); return false; })
+            .finally(function() { g.classList.remove('gain-envoi'); });
         }
 
-        // SONS
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        /* SONS */
+        var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function jouerSon(type) {
-            const now = audioContext.currentTime;
+            var now = audioCtx.currentTime;
             if (type === 'whoosh') {
-                const o = audioContext.createOscillator(), g = audioContext.createGain();
-                o.connect(g); g.connect(audioContext.destination);
+                var o = audioCtx.createOscillator(), g = audioCtx.createGain();
+                o.connect(g); g.connect(audioCtx.destination);
                 o.frequency.setValueAtTime(800, now); o.frequency.exponentialRampToValueAtTime(400, now + 0.3);
                 g.gain.setValueAtTime(0.3, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
                 o.start(now); o.stop(now + 0.3);
             } else if (type === 'ding') {
-                const o = audioContext.createOscillator(), g = audioContext.createGain();
-                o.connect(g); g.connect(audioContext.destination);
-                o.frequency.setValueAtTime(1200, now);
-                g.gain.setValueAtTime(0.2, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                o.start(now); o.stop(now + 0.3);
+                var o2 = audioCtx.createOscillator(), g2 = audioCtx.createGain();
+                o2.connect(g2); g2.connect(audioCtx.destination);
+                o2.frequency.setValueAtTime(1200, now);
+                g2.gain.setValueAtTime(0.2, now); g2.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                o2.start(now); o2.stop(now + 0.3);
             } else if (type === 'bingo') {
-                [523.25, 659.25, 783.99].forEach((freq, i) => {
-                    const o = audioContext.createOscillator(), g = audioContext.createGain();
-                    o.connect(g); g.connect(audioContext.destination); o.frequency.value = freq;
-                    g.gain.setValueAtTime(0.15, now + i * 0.08);
-                    g.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.25);
-                    o.start(now + i * 0.08); o.stop(now + i * 0.08 + 0.25);
+                [523.25, 659.25, 783.99].forEach(function(freq, i) {
+                    var o3 = audioCtx.createOscillator(), g3 = audioCtx.createGain();
+                    o3.connect(g3); g3.connect(audioCtx.destination); o3.frequency.value = freq;
+                    g3.gain.setValueAtTime(0.15, now + i * 0.08);
+                    g3.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.25);
+                    o3.start(now + i * 0.08); o3.stop(now + i * 0.08 + 0.25);
                 });
             }
         }
 
-        // GÉNÉRATION GRILLES
+        /* GRILLES */
         function genererGrille() {
-            const tailles = [5, 6, 7], grille = [], used = new Set();
-            tailles.forEach(taille => {
-                const ligne = [];
+            var tailles = [5, 6, 7], grille = [], used = {};
+            tailles.forEach(function(taille) {
+                var ligne = [];
                 while (ligne.length < taille) {
-                    const n = Math.floor(Math.random() * 99) + 1;
-                    if (!used.has(n)) { ligne.push(n); used.add(n); }
+                    var n = Math.floor(Math.random() * 99) + 1;
+                    if (!used[n]) { ligne.push(n); used[n] = true; }
                 }
-                const triees = ligne.sort((a, b) => a - b);
-                const positions = Array.from({length: 8}, (_, i) => i).sort(() => Math.random() - 0.5).slice(0, taille).sort((a, b) => a - b);
-                grille.push({ numeros: triees, positions, matching: [], checked: new Set(), gagnee: false });
+                ligne.sort(function(a, b) { return a - b; });
+                var positions = [];
+                for (var p = 0; p < 8; p++) positions.push(p);
+                positions.sort(function() { return Math.random() - 0.5; });
+                positions = positions.slice(0, taille).sort(function(a, b) { return a - b; });
+                grille.push({ numeros: ligne, positions: positions, matching: [], checked: {}, gagnee: false });
             });
             return grille;
         }
 
-        // ÉTAT DU JEU
-        let etatJeu = {
+        /* ÉTAT */
+        var etatJeu = {
             grilleJoueur: genererGrille(), grilleAdversaire: genererGrille(),
-            numeroRestants: Array.from({length: 99}, (_, i) => i + 1).sort(() => Math.random() - 0.5),
-            index: 0, gainJoueur: 0, gainAdversaire: 0, lignesJoueur: 0, lignesAdversaire: 0,
-            enCours: false, boulesTirees: [], timerActif: false, timerInterval: null,
-            tirageFinalise: false, peutTirer: true, partieTerminee: false, partieId: 1,
+            numeroRestants: [], index: 0, gainJoueur: 0, gainAdversaire: 0,
+            lignesJoueur: 0, lignesAdversaire: 0, enCours: false, boulesTirees: [],
+            timerActif: false, timerInterval: null, tirageFinalise: false,
+            peutTirer: true, partieTerminee: false, partieId: 1,
             sessionId: Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10)
         };
+        (function() { var a = []; for (var i = 1; i <= 99; i++) a.push(i); a.sort(function() { return Math.random() - 0.5; }); etatJeu.numeroRestants = a; })();
 
-        // AFFICHAGE GRILLE
-        function afficherGrille(grille, elId, isAdv = false) {
-            const c = document.getElementById(elId); c.innerHTML = '';
-            const gains = [5, 10, 15];
-            grille.forEach((ligne, idx) => {
-                const ld = document.createElement('div'); ld.className = 'ligne';
-                const ln = document.createElement('div'); ln.className = 'ligne-numero'; ln.textContent = 'L' + (idx + 1);
-                const nd = document.createElement('div'); nd.className = 'ligne-numeros'; nd.id = 'nums' + elId + idx;
-                let ni = 0;
-                for (let p = 0; p < 8; p++) {
-                    const cd = document.createElement('div'); cd.className = 'numero-case';
-                    if (!ligne.positions.includes(p)) { cd.classList.add('case-grise'); cd.setAttribute('aria-hidden', 'true'); }
-                    else {
-                        const n = ligne.numeros[ni++]; cd.textContent = n; cd.dataset.numero = n; cd.dataset.ligne = idx;
-                        if (ligne.checked.has(n)) cd.classList.add(isAdv ? 'checked-bot' : 'checked');
-                        if (!isAdv) cd.addEventListener('click', () => {
-                            if (etatJeu.timerActif && etatJeu.boulesTirees.includes(n) && !ligne.checked.has(n)) {
-                                cd.classList.add('checked'); ligne.checked.add(n);
-                                verifierLignesCompletes();
-                                if (!etatJeu.partieTerminee) { mettreAJourCompteurCoches(); verifierCochageComplet(); }
-                            }
-                        });
+        function afficherGrille(grille, elId, isAdv) {
+            var c = document.getElementById(elId); c.innerHTML = '';
+            var gains = [5, 10, 15];
+            grille.forEach(function(ligne, idx) {
+                var ld = document.createElement('div'); ld.className = 'ligne';
+                var ln = document.createElement('div'); ln.className = 'ligne-numero'; ln.textContent = 'L' + (idx + 1);
+                var nd = document.createElement('div'); nd.className = 'ligne-numeros'; nd.id = 'nums' + elId + idx;
+                var ni = 0;
+                for (var p = 0; p < 8; p++) {
+                    var cd = document.createElement('div'); cd.className = 'numero-case';
+                    if (ligne.positions.indexOf(p) === -1) {
+                        cd.classList.add('case-grise'); cd.setAttribute('aria-hidden', 'true');
+                    } else {
+                        var n = ligne.numeros[ni++]; cd.textContent = n; cd.dataset.numero = n; cd.dataset.ligne = idx;
+                        if (ligne.checked[n]) cd.classList.add(isAdv ? 'checked-bot' : 'checked');
+                        if (!isAdv) (function(num, l) {
+                            cd.addEventListener('click', function() {
+                                if (etatJeu.timerActif && etatJeu.boulesTirees.indexOf(num) !== -1 && !l.checked[num]) {
+                                    cd.classList.add('checked'); l.checked[num] = true;
+                                    verifierLignesCompletes();
+                                    if (!etatJeu.partieTerminee) { mettreAJourCompteurCoches(); verifierCochageComplet(); }
+                                }
+                            });
+                        })(n, ligne);
                     }
                     nd.appendChild(cd);
                 }
-                const gd = document.createElement('div'); gd.className = 'ligne-gain'; gd.textContent = gains[idx] + ' 🪙';
+                var gd = document.createElement('div'); gd.className = 'ligne-gain'; gd.textContent = gains[idx] + ' 🪙';
                 ld.appendChild(ln); ld.appendChild(nd); ld.appendChild(gd); c.appendChild(ld);
             });
         }
 
-        // ============ BOULES ============
+        /* ===== BOULES ===== */
 
-        function creerSVGBoule(uid, texte, estInterrogation) {
-            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            svg.setAttribute('viewBox', '0 0 100 100');
-            svg.setAttribute('class', 'boule-svg');
+        /* Crée un SVG de boule via un div temporaire (fiable dans tous les navigateurs) */
+        function creerSVGBoule(uid, texte, estInterrogation, avecAnim) {
+            var temp = document.createElement('div');
+            var classeTexte = 'boule-chiffre';
+            if (estInterrogation) classeTexte += ' interrogation';
+            if (avecAnim) classeTexte += ' reveler';
 
-            svg.innerHTML = `
-                <defs>
-                    <radialGradient id="${uid}" cx="38%" cy="28%" r="68%">
-                        <stop offset="0%" stop-color="#fffbe8"/>
-                        <stop offset="16%" stop-color="#ffe566"/>
-                        <stop offset="44%" stop-color="#ffc800"/>
-                        <stop offset="72%" stop-color="#cc9900"/>
-                        <stop offset="100%" stop-color="#8b6508"/>
-                    </radialGradient>
-                    <radialGradient id="${uid}h" cx="30%" cy="22%" r="22%">
-                        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.93"/>
-                        <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-                    </radialGradient>
-                    <radialGradient id="${uid}s" cx="58%" cy="78%" r="36%">
-                        <stop offset="0%" stop-color="#5a2d00" stop-opacity="0.2"/>
-                        <stop offset="100%" stop-color="#5a2d00" stop-opacity="0"/>
-                    </radialGradient>
-                    <filter id="${uid}f" x="-15%" y="-10%" width="130%" height="140%">
-                        <feGaussianBlur in="SourceAlpha" stdDeviation="3.5"/>
-                        <feOffset dx="0" dy="5"/>
-                        <feComponentTransfer><feFuncA type="linear" slope="0.28"/></feComponentTransfer>
-                        <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
-                    </filter>
-                </defs>
-                <ellipse cx="50" cy="91" rx="24" ry="5" fill="rgba(0,0,0,0.09)"/>
-                <circle cx="50" cy="46" r="38" fill="url(#${uid})" filter="url(#${uid}f)"/>
-                <circle cx="50" cy="46" r="38" fill="url(#${uid}s)"/>
-                <circle cx="36" cy="31" r="14" fill="url(#${uid}h)"/>
-                <circle cx="50" cy="48" r="17.5" fill="#5c3310" fill-opacity="0.88"/>
-                <circle cx="50" cy="48" r="15.5" fill="#fffaeb" fill-opacity="0.97"/>
-                <text x="50" y="49" class="boule-chiffre ${estInterrogation ? 'interrogation' : ''}">${texte}</text>
-            `;
-            return svg;
+            temp.innerHTML =
+                '<svg viewBox="0 0 100 100" class="boule-svg">' +
+                    '<defs>' +
+                        '<radialGradient id="' + uid + '" cx="38%" cy="28%" r="68%">' +
+                            '<stop offset="0%" stop-color="#fffbe8"/>' +
+                            '<stop offset="16%" stop-color="#ffe566"/>' +
+                            '<stop offset="44%" stop-color="#ffc800"/>' +
+                            '<stop offset="72%" stop-color="#cc9900"/>' +
+                            '<stop offset="100%" stop-color="#8b6508"/>' +
+                        '</radialGradient>' +
+                        '<radialGradient id="' + uid + 'h" cx="30%" cy="22%" r="22%">' +
+                            '<stop offset="0%" stop-color="#ffffff" stop-opacity="0.93"/>' +
+                            '<stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>' +
+                        '</radialGradient>' +
+                        '<radialGradient id="' + uid + 's" cx="58%" cy="78%" r="36%">' +
+                            '<stop offset="0%" stop-color="#5a2d00" stop-opacity="0.2"/>' +
+                            '<stop offset="100%" stop-color="#5a2d00" stop-opacity="0"/>' +
+                        '</radialGradient>' +
+                        '<filter id="' + uid + 'f" x="-15%" y="-10%" width="130%" height="140%">' +
+                            '<feGaussianBlur in="SourceAlpha" stdDeviation="3.5"/>' +
+                            '<feOffset dx="0" dy="5"/>' +
+                            '<feComponentTransfer><feFuncA type="linear" slope="0.28"/></feComponentTransfer>' +
+                            '<feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>' +
+                        '</filter>' +
+                    '</defs>' +
+                    '<ellipse cx="50" cy="91" rx="24" ry="5" fill="rgba(0,0,0,0.09)"/>' +
+                    '<circle cx="50" cy="46" r="38" fill="url(#' + uid + ')" filter="url(#' + uid + 'f)"/>' +
+                    '<circle cx="50" cy="46" r="38" fill="url(#' + uid + 's)"/>' +
+                    '<circle cx="36" cy="31" r="14" fill="url(#' + uid + 'h)"/>' +
+                    '<circle cx="50" cy="48" r="17.5" fill="#5c3310" fill-opacity="0.88"/>' +
+                    '<circle cx="50" cy="48" r="15.5" fill="#fffaeb" fill-opacity="0.97"/>' +
+                    '<text x="50" y="49" class="' + classeTexte + '">' + texte + '</text>' +
+                '</svg>';
+            return temp.firstElementChild;
         }
 
         function creerEtincelles(container) {
-            const couleurs = ['#ffd700', '#fff8dc', '#ffec8b', '#daa520', '#ffe680', '#fff5cc'];
-            for (let i = 0; i < 12; i++) {
-                const s = document.createElement('div'); s.className = 'etincelle';
-                const angle = (i / 12) * Math.PI * 2 + (Math.random() - 0.5) * 0.4;
-                const dist = 22 + Math.random() * 28;
+            var couleurs = ['#ffd700', '#fff8dc', '#ffec8b', '#daa520', '#ffe680', '#fff5cc'];
+            for (var i = 0; i < 12; i++) {
+                var s = document.createElement('div'); s.className = 'etincelle';
+                var angle = (i / 12) * Math.PI * 2 + (Math.random() - 0.5) * 0.4;
+                var dist = 22 + Math.random() * 28;
                 s.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
                 s.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
                 s.style.backgroundColor = couleurs[i % couleurs.length];
                 s.style.left = '50%'; s.style.top = '42%';
-                const t = 3 + Math.random() * 4; s.style.width = t + 'px'; s.style.height = t + 'px';
+                var t = 3 + Math.random() * 4; s.style.width = t + 'px'; s.style.height = t + 'px';
                 container.appendChild(s);
-                setTimeout(() => { if (s.parentNode) s.remove(); }, 750);
+                (function(el) { setTimeout(function() { if (el.parentNode) el.remove(); }, 750); })(s);
             }
         }
 
         function afficherBoules(numeros, tournante) {
-            const wrapper = document.getElementById('boulesWrapper');
+            var wrapper = document.getElementById('boulesWrapper');
 
             if (tournante) {
-                /* Phase 1 : créer les boules avec "?" et les faire rouler */
+                /* Phase 1 : boules avec "?" qui roulent depuis la gauche */
                 wrapper.innerHTML = '';
-                numeros.forEach((n, i) => {
-                    const container = document.createElement('div');
-                    container.className = 'boule-container';
-                    const uid = 'bg' + i + '_' + Date.now();
-                    container.appendChild(creerSVGBoule(uid, '?', true));
-                    wrapper.appendChild(container);
-                    /* Double rAF pour garantir l'état initial avant l'animation */
-                    requestAnimationFrame(() => {
-                        requestAnimationFrame(() => { container.classList.add('rouler'); });
-                    });
-                });
+                for (var i = 0; i < numeros.length; i++) {
+                    (function(idx) {
+                        var container = document.createElement('div');
+                        container.className = 'boule-container';
+                        container.dataset.numero = numeros[idx];
+                        var uid = 'bg' + idx + '_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+                        container.appendChild(creerSVGBoule(uid, '?', true, false));
+                        wrapper.appendChild(container);
+                        requestAnimationFrame(function() {
+                            requestAnimationFrame(function() { container.classList.add('rouler'); });
+                        });
+                    })(i);
+                }
             } else {
-                /* Phase 2 : révéler les numéros dans les boules existantes */
-                const containers = wrapper.querySelectorAll('.boule-container');
-                containers.forEach((container, i) => {
-                    if (i >= numeros.length) return;
-                    const svg = container.querySelector('svg');
-                    if (!svg) return;
-
-                    /* Retirer l'ancien texte "?" */
-                    const oldText = svg.querySelector('text.boule-chiffre');
-                    if (oldText) oldText.remove();
-
-                    /* Créer le nouveau texte avec le numéro */
-                    const newText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    newText.setAttribute('x', '50');
-                    newText.setAttribute('y', '49');
-                    newText.setAttribute('class', 'boule-chiffre reveler');
-                    newText.setAttribute('text-anchor', 'middle');
-                    newText.setAttribute('dominant-baseline', 'middle');
-                    newText.textContent = numeros[i];
-                    svg.appendChild(newText);
-
-                    /* Flash doré sur la boule */
-                    container.classList.add('revele');
-
-                    /* Étincelles */
-                    creerEtincelles(container);
-                });
+                /* Phase 2 : remplacer le SVG complet de chaque boule par la version avec le numéro */
+                var containers = wrapper.querySelectorAll('.boule-container');
+                for (var j = 0; j < containers.length; j++) {
+                    (function(container, idx) {
+                        if (idx >= numeros.length) return;
+                        var num = container.dataset.numero || numeros[idx];
+                        /* Supprimer l'ancien SVG */
+                        var oldSvg = container.querySelector('svg');
+                        if (oldSvg) oldSvg.remove();
+                        /* Créer le nouveau SVG avec le vrai numéro */
+                        var uid = 'rv' + idx + '_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+                        container.appendChild(creerSVGBoule(uid, num, false, true));
+                        /* Flash doré */
+                        container.classList.add('revele');
+                        /* Étincelles */
+                        creerEtincelles(container);
+                    })(containers[j], j);
+                }
             }
         }
 
-        // TIRER 3 BOULES
+        /* TIRER 3 BOULES */
         function tirer3Boules() {
             if (etatJeu.partieTerminee || etatJeu.index >= 99 || etatJeu.enCours || !etatJeu.peutTirer) return;
             etatJeu.enCours = true; etatJeu.peutTirer = false;
-            const pid = etatJeu.partieId; etatJeu.tirageFinalise = false;
+            var pid = etatJeu.partieId; etatJeu.tirageFinalise = false;
             if (etatJeu.timerInterval) { clearInterval(etatJeu.timerInterval); etatJeu.timerInterval = null; }
             document.getElementById('btnTirage').disabled = true;
             etatJeu.boulesTirees = [];
-            const numeros = [];
-            for (let i = 0; i < 3 && etatJeu.index < 99; i++) numeros.push(etatJeu.numeroRestants[etatJeu.index++]);
+            var numeros = [];
+            for (var i = 0; i < 3 && etatJeu.index < 99; i++) numeros.push(etatJeu.numeroRestants[etatJeu.index++]);
 
             afficherBoules(numeros, true);
             document.getElementById('grilleJoueurDiv').classList.add('tirage-actif');
             document.getElementById('grilleAdversaireDiv').classList.add('tirage-actif');
             jouerSon('whoosh');
 
-            setTimeout(() => {
+            setTimeout(function() {
                 if (pid !== etatJeu.partieId) return;
                 afficherBoules(numeros, false);
                 document.getElementById('grilleJoueurDiv').classList.remove('tirage-actif');
@@ -1079,16 +932,16 @@
                 jouerSon('ding');
                 etatJeu.boulesTirees = numeros;
 
-                const total = compterNumerosATirer();
+                var total = compterNumerosATirer();
                 if (total > 0) { mettreAJourCompteurCoches(); demarrerTimer(); }
                 else { afficherMessage('0 numéro à cocher', 'info'); etatJeu.timerActif = false; finirTirage(false, 500); }
 
                 etatJeu.enCours = false;
 
-                /* Robot : 3 secondes de réflexion avant de cocher */
+                /* Robot : 3 secondes de réflexion */
                 if (!etatJeu.partieTerminee) {
-                    const rpid = pid;
-                    setTimeout(() => {
+                    var rpid = pid;
+                    setTimeout(function() {
                         if (rpid !== etatJeu.partieId) return;
                         cocherRobot(numeros); verifierLignesCompletes(); mettreAJourStats();
                     }, 3000);
@@ -1097,39 +950,49 @@
         }
 
         function compterNumerosATirer() {
-            return etatJeu.grilleJoueur.reduce((t, l) => t + etatJeu.boulesTirees.filter(n => l.numeros.includes(n)).length, 0);
+            var t = 0;
+            etatJeu.grilleJoueur.forEach(function(l) {
+                etatJeu.boulesTirees.forEach(function(n) { if (l.numeros.indexOf(n) !== -1) t++; });
+            });
+            return t;
         }
+
         function compterNumerosCoches() {
-            return etatJeu.grilleJoueur.reduce((t, l) => t + etatJeu.boulesTirees.filter(n => l.numeros.includes(n) && l.checked.has(n)).length, 0);
+            var t = 0;
+            etatJeu.grilleJoueur.forEach(function(l) {
+                etatJeu.boulesTirees.forEach(function(n) { if (l.numeros.indexOf(n) !== -1 && l.checked[n]) t++; });
+            });
+            return t;
         }
+
         function mettreAJourCompteurCoches() {
-            const total = compterNumerosATirer();
-            const restant = Math.max(0, total - compterNumerosCoches());
+            var total = compterNumerosATirer(), restant = Math.max(0, total - compterNumerosCoches());
             afficherMessage(restant + (restant === 1 ? ' numéro à cocher' : ' numéros à cocher'), restant === 0 ? 'victoire' : 'info');
         }
+
         function verifierCochageComplet() {
             if (!etatJeu.timerActif || etatJeu.tirageFinalise) return;
-            const total = compterNumerosATirer(), coches = compterNumerosCoches();
-            if (total > 0 && coches === total) finirTirage(false, 0);
+            if (compterNumerosATirer() > 0 && compterNumerosCoches() === compterNumerosATirer()) finirTirage(false, 0);
         }
 
         function demarrerTimer() {
-            etatJeu.timerActif = true; let temps = 45;
+            etatJeu.timerActif = true; var temps = 45;
             document.getElementById('timerZone').innerHTML = '<div class="timer ok">⏱️ 45s</div>';
-            etatJeu.timerInterval = setInterval(() => {
+            etatJeu.timerInterval = setInterval(function() {
                 temps--;
-                let cls = 'timer ok'; if (temps <= 15) cls = 'timer mid'; if (temps <= 5) cls = 'timer';
+                var cls = 'timer ok'; if (temps <= 15) cls = 'timer mid'; if (temps <= 5) cls = 'timer';
                 document.getElementById('timerZone').innerHTML = '<div class="' + cls + '">⏱️ ' + temps + 's</div>';
                 if (temps <= 0) finirTirage(true, 0);
             }, 1000);
         }
 
         function cocherAutomatiquementLesBonsNumeros() {
-            etatJeu.grilleJoueur.forEach((ligne, li) => {
-                etatJeu.boulesTirees.forEach(n => {
-                    if (ligne.numeros.includes(n)) {
-                        ligne.checked.add(n);
-                        document.querySelectorAll('#numsGrilleJoueur' + li + ' [data-numero="' + n + '"]').forEach(c => c.classList.add('checked'));
+            etatJeu.grilleJoueur.forEach(function(ligne, li) {
+                etatJeu.boulesTirees.forEach(function(n) {
+                    if (ligne.numeros.indexOf(n) !== -1) {
+                        ligne.checked[n] = true;
+                        var cases = document.querySelectorAll('#numsGrilleJoueur' + li + ' [data-numero="' + n + '"]');
+                        for (var c = 0; c < cases.length; c++) cases[c].classList.add('checked');
                     }
                 });
             });
@@ -1145,12 +1008,12 @@
             document.getElementById('grilleAdversaireDiv').classList.remove('validation-actif');
             document.getElementById('timerZone').innerHTML = '';
             validerCoches();
-            const total = compterNumerosATirer();
+            var total = compterNumerosATirer();
             if (cocherAuto) afficherMessage('Temps écoulé : coches automatiques', 'info');
             else if (total === 0) afficherMessage('Aucun numéro à cocher', 'info');
-            else afficherMessage('Bien coché!', 'victoire');
+            else afficherMessage('Bien coché !', 'victoire');
 
-            const reset = () => {
+            var reset = function() {
                 etatJeu.peutTirer = true; document.getElementById('btnTirage').disabled = false;
                 afficherGrille(etatJeu.grilleJoueur, 'grilleJoueur');
                 afficherGrille(etatJeu.grilleAdversaire, 'grilleAdversaire', true);
@@ -1161,18 +1024,24 @@
         }
 
         function cocherRobot(numeros) {
-            etatJeu.grilleAdversaire.forEach((ligne, li) => {
-                numeros.forEach(n => {
-                    if (ligne.numeros.includes(n)) {
-                        document.querySelectorAll('#numsGrilleAdversaire' + li + ' [data-numero="' + n + '"]').forEach(c => c.classList.add('checked-bot'));
-                        ligne.checked.add(n);
+            etatJeu.grilleAdversaire.forEach(function(ligne, li) {
+                numeros.forEach(function(n) {
+                    if (ligne.numeros.indexOf(n) !== -1) {
+                        var cases = document.querySelectorAll('#numsGrilleAdversaire' + li + ' [data-numero="' + n + '"]');
+                        for (var c = 0; c < cases.length; c++) cases[c].classList.add('checked-bot');
+                        ligne.checked[n] = true;
                     }
                 });
             });
         }
 
         function validerCoches() {
-            const ok = etatJeu.grilleJoueur.every(l => etatJeu.boulesTirees.filter(n => l.numeros.includes(n)).every(n => l.checked.has(n)));
+            var ok = true;
+            etatJeu.grilleJoueur.forEach(function(l) {
+                etatJeu.boulesTirees.forEach(function(n) {
+                    if (l.numeros.indexOf(n) !== -1 && !l.checked[n]) ok = false;
+                });
+            });
             etatJeu.peutTirer = ok; return ok;
         }
 
@@ -1192,20 +1061,25 @@
         }
 
         function verifierLignesCompletes() {
-            const gains = [5, 10, 15];
-            [etatJeu.grilleJoueur, etatJeu.grilleAdversaire].forEach((grille, isAdv) => {
-                grille.forEach((ligne, li) => {
-                    if (!ligne.gagnee && ligne.numeros.every(n => ligne.checked.has(n))) {
-                        ligne.gagnee = true; ligne.matching = [...ligne.numeros];
-                        const g = gains[li];
-                        if (isAdv) { etatJeu.gainAdversaire += g; etatJeu.lignesAdversaire++; afficherMessage('🤖 Ligne ' + (li+1) + ' : +' + g + ' pièces', 'defaite'); }
-                        else { etatJeu.gainJoueur += g; etatJeu.lignesJoueur++; afficherMessage('🎉 Ligne ' + (li+1) + ' : +' + g + ' pièces', 'victoire'); jouerSon('bingo'); crediterGainProfil(g, li); }
-                        mettreAJourStats();
+            var gains = [5, 10, 15];
+            [etatJeu.grilleJoueur, etatJeu.grilleAdversaire].forEach(function(grille, isAdv) {
+                grille.forEach(function(ligne, li) {
+                    if (!ligne.gagnee) {
+                        var complete = true;
+                        for (var k = 0; k < ligne.numeros.length; k++) { if (!ligne.checked[ligne.numeros[k]]) { complete = false; break; } }
+                        if (complete) {
+                            ligne.gagnee = true; ligne.matching = ligne.numeros.slice();
+                            var g = gains[li];
+                            if (isAdv) { etatJeu.gainAdversaire += g; etatJeu.lignesAdversaire++; afficherMessage('🤖 Ligne ' + (li+1) + ' : +' + g + ' pièces', 'defaite'); }
+                            else { etatJeu.gainJoueur += g; etatJeu.lignesJoueur++; afficherMessage('🎉 Ligne ' + (li+1) + ' : +' + g + ' pièces', 'victoire'); jouerSon('bingo'); crediterGainProfil(g, li); }
+                            mettreAJourStats();
+                        }
                     }
                 });
             });
-            const jOk = etatJeu.grilleJoueur.every(l => l.numeros.every(n => l.checked.has(n)));
-            const rOk = etatJeu.grilleAdversaire.every(l => l.numeros.every(n => l.checked.has(n)));
+            var jOk = true, rOk = true;
+            etatJeu.grilleJoueur.forEach(function(l) { for (var k = 0; k < l.numeros.length; k++) { if (!l.checked[l.numeros[k]]) { jOk = false; break; } } });
+            etatJeu.grilleAdversaire.forEach(function(l) { for (var k = 0; k < l.numeros.length; k++) { if (!l.checked[l.numeros[k]]) { rOk = false; break; } } });
             if (jOk) terminerPartie('joueur'); else if (rOk) terminerPartie('robot');
         }
 
@@ -1223,7 +1097,7 @@
             etatJeu.partieId++;
             if (etatJeu.timerInterval) { clearInterval(etatJeu.timerInterval); etatJeu.timerInterval = null; }
             etatJeu.grilleJoueur = genererGrille(); etatJeu.grilleAdversaire = genererGrille();
-            etatJeu.numeroRestants = Array.from({length: 99}, (_, i) => i + 1).sort(() => Math.random() - 0.5);
+            var a = []; for (var i = 1; i <= 99; i++) a.push(i); a.sort(function() { return Math.random() - 0.5; }); etatJeu.numeroRestants = a;
             etatJeu.index = 0; etatJeu.lignesJoueur = 0; etatJeu.lignesAdversaire = 0;
             etatJeu.enCours = false; etatJeu.boulesTirees = []; etatJeu.timerActif = false;
             etatJeu.tirageFinalise = false; etatJeu.peutTirer = true; etatJeu.partieTerminee = false;
@@ -1249,15 +1123,16 @@
 
         document.getElementById('btnTirage').addEventListener('click', tirer3Boules);
         document.getElementById('btnNouvelleGrille').addEventListener('click', nouvelleGrille);
-        document.getElementById('btnChangerProfil').addEventListener('click', () => {
+        document.getElementById('btnChangerProfil').addEventListener('click', function() {
             localStorage.removeItem(CLE_MODE_ANONYME);
             window.location.href = 'https://pierreg78-maker.github.io/vitrine-enchantee/profil-demo.html';
         });
-        document.getElementById('btnJouerAnonyme').addEventListener('click', () => {
+        document.getElementById('btnJouerAnonyme').addEventListener('click', function() {
             modeAnonyme = true; localStorage.setItem(CLE_MODE_ANONYME, '1'); profilActif = null; afficherProfil();
         });
 
-        (async function () { await actualiserProfilDepuisServeur(); initialiser(); })();
+        /* DÉMARRAGE — initialiser() tourne toujours, même si le profil échoue */
+        actualiserProfilDepuisServeur().finally(function() { initialiser(); });
     </script>
 </body>
 </html>
