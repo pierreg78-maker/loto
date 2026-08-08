@@ -60,8 +60,6 @@
             color: #fff;
             text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
         }
-        
- 
 
         /* GRILLES */
         .grille-joueur, .grille-adversaire {
@@ -158,18 +156,15 @@
             box-shadow: inset 0 1px 3px rgba(0,0,0,.35);
         }
 
-        /* État tirage - couleurs claires */
         .tirage-actif .numero-case {
             background: #f9f9f9;
             color: #aaa;
         }
 
-        /* État validation - couleurs sombres */
         .validation-actif .numero-case {
             color: #3d3220;
         }
 
-        /* Cercle vert de sélection (le numéro reste visible) */
         .numero-case.checked {
             background: #f5f5f5;
             color: #3d3220;
@@ -187,7 +182,6 @@
             pointer-events: none;
         }
 
-        /* Cercle bleu (robot) */
         .numero-case.checked-bot {
             background: #f5f5f5;
             color: #3d3220;
@@ -205,77 +199,163 @@
             pointer-events: none;
         }
 
-        /* Erreur (mauvais numéro) */
         .numero-case.erreur {
             background: #fadbd8;
             border-color: #e74c3c;
         }
 
-        /* BOULES CENTRALES */
+        /* ============ BOULES — SPHÈRES 3D ROULANTES ============ */
         .boules-wrapper {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: clamp(8px, 3vw, 20px);
-            min-height: 96px;
+            min-height: 115px;
             flex: 1;
+            position: relative;
+            overflow: visible;
+        }
+
+        /* Lueur d'ambiance derrière les boules */
+        .boules-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: -10px -14px;
+            background: radial-gradient(ellipse at center, rgba(255,215,0,0.1) 0%, transparent 65%);
+            pointer-events: none;
+            border-radius: 20px;
+        }
+
+        /* Sol / surface de roulement */
+        .boules-wrapper::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 6%;
+            right: 6%;
+            height: 7px;
+            background: radial-gradient(ellipse at center, rgba(139,90,43,0.18) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
         }
 
         .boule-container {
             position: relative;
             width: clamp(72px, 20vw, 105px);
             height: clamp(72px, 20vw, 105px);
-            perspective: 1000px;
             flex: 0 1 auto;
+            opacity: 0;
+            transform: translateX(-95px) translateY(18px) rotate(0deg) scale(0.25);
+            will-change: transform, opacity;
         }
 
-        .boule-spinner {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
+        .boule-container.rouler {
+            animation: roulerBoule 1.35s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
         }
 
-        .boule-spinner.tournante {
-            animation: tournerVertical 3s cubic-bezier(.2,.75,.25,1);
+        .boule-container:nth-child(2).rouler {
+            animation-delay: 0.22s;
         }
 
-        @keyframes tournerVertical {
-            0% { transform: rotateY(0deg) scale(.92); }
-            45% { transform: rotateY(900deg) scale(1.08); }
-            100% { transform: rotateY(1440deg) scale(1); }
+        .boule-container:nth-child(3).rouler {
+            animation-delay: 0.44s;
+        }
+
+        @keyframes roulerBoule {
+            0% {
+                opacity: 0;
+                transform: translateX(-95px) translateY(18px) rotate(0deg) scale(0.25);
+            }
+            12% {
+                opacity: 1;
+            }
+            62% {
+                transform: translateX(7px) translateY(-10px) rotate(780deg) scale(1.14);
+            }
+            80% {
+                transform: translateX(-5px) translateY(4px) rotate(910deg) scale(0.93);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) translateY(0) rotate(960deg) scale(1);
+            }
+        }
+
+        /* Flash doré à la révélation du numéro */
+        .boule-container.revele {
+            animation: flashRevelation 0.7s ease-out forwards;
+        }
+
+        @keyframes flashRevelation {
+            0% {
+                filter: brightness(1.7) drop-shadow(0 0 20px rgba(255,215,0,0.85));
+            }
+            100% {
+                filter: brightness(1) drop-shadow(0 0 0 transparent);
+            }
         }
 
         .boule-svg {
             width: 100%;
             height: 100%;
+            display: block;
         }
 
-        svg circle.boule {
-            filter: drop-shadow(0 7px 8px rgba(113, 72, 0, 0.35)) drop-shadow(0 0 12px rgba(255, 215, 0, 0.45));
-            transition: filter 0.3s ease;
-        }
-
-        .tirage-actif svg circle.boule {
-            filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.3));
-        }
-
-        svg text.boule-numero {
-            font-weight: bold;
-            font-size: 28px;
-            fill: #3d3220;
+        svg .boule-numero {
+            font-weight: 900;
+            font-size: 26px;
+            fill: #4a3520;
             text-anchor: middle;
             dominant-baseline: middle;
-            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+            font-family: 'Georgia', serif;
         }
 
-        .tirage-actif svg text.boule-numero {
-            fill: #bbb;
+        /* Style du "?" pendant le roulement */
+        svg .boule-numero.interrogation {
+            font-style: italic;
+            font-size: 30px;
+            fill: #8b6914;
+            opacity: 0.65;
         }
 
-        .validation-actif svg text.boule-numero {
-            fill: #3d3220;
-            font-weight: 900;
+        /* Animation du numéro qui apparaît */
+        svg .boule-numero.reveler {
+            animation: numeroApparaitre 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes numeroApparaitre {
+            0% {
+                opacity: 0;
+                transform: scale(2.8);
+                transform-origin: center;
+                transform-box: fill-box;
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+                transform-origin: center;
+                transform-box: fill-box;
+            }
+        }
+
+        /* Étincelles qui éclatent à la révélation */
+        .etincelle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10;
+            animation: etinceler 0.65s ease-out forwards;
+        }
+
+        @keyframes etinceler {
+            0% {
+                transform: translate(-50%, -50%) scale(1.3);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0);
+                opacity: 0;
+            }
         }
 
         /* TIMER */
@@ -496,7 +576,6 @@
             border-left: 3px solid #3498db;
         }
 
-
         .stats-row {
             display: grid;
             grid-template-columns: 94px minmax(84px, .9fr) minmax(96px, 1fr) minmax(112px, 1.18fr);
@@ -567,7 +646,6 @@
         }
 
         /* RESPONSIVE */
-
         @media (max-width: 520px) {
             .container { padding: 6px; }
             .header { margin-bottom: 7px; padding: 7px 10px; }
@@ -582,8 +660,10 @@
             .tirage-panel { grid-template-columns: 82px minmax(0,1fr) 78px; gap: 3px; margin: 2px 0 7px; }
             .btn-tirer { width: 78px; height: 58px; border-radius: 20px; font-size: .70em; padding: 5px; }
             .btn-nouvelle-grille { width: 74px; min-height: 34px; border-radius: 14px; font-size: .58em; padding: 4px; }
-            .boules-wrapper { min-height: 74px; gap: 4px; }
-            .boule-container { width: clamp(62px, 21vw, 82px); height: clamp(62px, 21vw, 82px); }
+            .boules-wrapper { min-height: 90px; gap: 4px; }
+            .boule-container { width: clamp(60px, 21vw, 82px); height: clamp(60px, 21vw, 82px); }
+            svg .boule-numero { font-size: 20px; }
+            svg .boule-numero.interrogation { font-size: 24px; }
             .timer { font-size: 1.25em; }
             .message-zone { font-size: .7em; }
             .stats-section { margin-top: 0; padding-top: 0; }
@@ -594,10 +674,38 @@
             .stats-row .progression-label, .stats-row .gain-label { font-size: .54em; letter-spacing: 0; }
             .stats-row .progression-text { font-size: .65em; }
             .stats-row .gain-value { font-size: 1.05em; }
+            @keyframes roulerBoule {
+                0% {
+                    opacity: 0;
+                    transform: translateX(-70px) translateY(14px) rotate(0deg) scale(0.25);
+                }
+                12% { opacity: 1; }
+                62% {
+                    transform: translateX(5px) translateY(-7px) rotate(780deg) scale(1.12);
+                }
+                80% {
+                    transform: translateX(-3px) translateY(3px) rotate(910deg) scale(0.93);
+                }
+                100% {
+                    opacity: 1;
+                    transform: translateX(0) translateY(0) rotate(960deg) scale(1);
+                }
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .boule-spinner.tournante {
+            .boule-container.rouler {
+                animation: none;
+                opacity: 1;
+                transform: none;
+            }
+            .boule-container.revele {
+                animation: none;
+            }
+            .etincelle {
+                display: none;
+            }
+            svg .boule-numero.reveler {
                 animation: none;
             }
         }
@@ -607,17 +715,17 @@
     <div class="container">
         <!-- HEADER -->
         <div class="header">
-           
+
             <h1>🎰 Loto Bingo 🪙</h1>
             <div class="profil-barre">
                 <span class="profil-badge">👤 <span id="profilNom">Aucun profil</span></span>
-                <span class="solde-badge">🪙 <span id="profilSolde">0</span> pièces d’or</span>
+                <span class="solde-badge">🪙 <span id="profilSolde">0</span> pièces d'or</span>
             </div>
             <div class="profil-actions">
                 <button class="profil-action" id="btnChangerProfil" type="button">Changer de profil</button>
                 <button class="profil-action" id="btnJouerAnonyme" type="button">Jouer anonymement</button>
             </div>
-             
+
         </div>
 
         <div class="profil-alerte" id="profilAlerte">
@@ -756,7 +864,7 @@
                 sauvegarderProfilActif(resultat.profil);
                 return true;
             } catch (erreur) {
-                afficherMessage('Impossible d’actualiser le profil.', 'defaite');
+                afficherMessage('Impossible d\'actualiser le profil.', 'defaite');
                 return false;
             }
         }
@@ -804,7 +912,7 @@
                 afficherMessage(
                     resultat.dejaEnregistre
                         ? 'Ce gain était déjà enregistré.'
-                        : '🎉 +' + montant + ' pièces d’or ajoutées au profil de ' + profilActif.prenom,
+                        : '🎉 +' + montant + ' pièces d\'or ajoutées au profil de ' + profilActif.prenom,
                     'victoire'
                 );
                 return true;
@@ -918,7 +1026,7 @@
             grille.forEach((ligne, idx) => {
                 const ligneDiv = document.createElement('div');
                 ligneDiv.className = 'ligne';
-                
+
                 const ligneNumDiv = document.createElement('div');
                 ligneNumDiv.className = 'ligne-numero';
                 ligneNumDiv.textContent = `L${idx + 1}`;
@@ -926,7 +1034,7 @@
                 const numerosDiv = document.createElement('div');
                 numerosDiv.className = 'ligne-numeros';
                 numerosDiv.id = `nums${elementId}${idx}`;
-                
+
                 let numeroIndex = 0;
                 for (let position = 0; position < 8; position++) {
                     const numeroDiv = document.createElement('div');
@@ -973,6 +1081,123 @@
             });
         }
 
+        // ============ BOULES — SVG sphère 3D ============
+
+        /* Génère le markup SVG interne d'une boule */
+        function creerMarkupBoule(uid, texte, estInterrogation) {
+            return `
+                <defs>
+                    <radialGradient id="${uid}" cx="38%" cy="28%" r="68%">
+                        <stop offset="0%" stop-color="#fffbe8"/>
+                        <stop offset="16%" stop-color="#ffe566"/>
+                        <stop offset="44%" stop-color="#ffc800"/>
+                        <stop offset="72%" stop-color="#cc9900"/>
+                        <stop offset="100%" stop-color="#8b6508"/>
+                    </radialGradient>
+                    <radialGradient id="${uid}h" cx="30%" cy="22%" r="22%">
+                        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.93"/>
+                        <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+                    </radialGradient>
+                    <radialGradient id="${uid}s" cx="58%" cy="78%" r="36%">
+                        <stop offset="0%" stop-color="#5a2d00" stop-opacity="0.2"/>
+                        <stop offset="100%" stop-color="#5a2d00" stop-opacity="0"/>
+                    </radialGradient>
+                    <filter id="${uid}f" x="-15%" y="-10%" width="130%" height="140%">
+                        <feGaussianBlur in="SourceAlpha" stdDeviation="3.5"/>
+                        <feOffset dx="0" dy="5"/>
+                        <feComponentTransfer><feFuncA type="linear" slope="0.28"/></feComponentTransfer>
+                        <feMerge>
+                            <feMergeNode/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                <ellipse cx="50" cy="91" rx="24" ry="5" fill="rgba(0,0,0,0.09)"/>
+                <circle cx="50" cy="46" r="38" fill="url(#${uid})" filter="url(#${uid}f)"/>
+                <circle cx="50" cy="46" r="38" fill="url(#${uid}s)"/>
+                <circle cx="36" cy="31" r="14" fill="url(#${uid}h)"/>
+                <circle cx="50" cy="48" r="17.5" fill="#5c3310" fill-opacity="0.88"/>
+                <circle cx="50" cy="48" r="15.5" fill="#fffaeb" fill-opacity="0.97"/>
+                <text x="50" y="49" class="boule-numero ${estInterrogation ? 'interrogation' : ''}">${texte}</text>
+            `;
+        }
+
+        /* Crée les petites étincelles qui éclatent autour d'une boule */
+        function creerEtincelles(container) {
+            const couleurs = ['#ffd700', '#fff8dc', '#ffec8b', '#daa520', '#ffe680', '#fff5cc'];
+            for (let i = 0; i < 12; i++) {
+                const spark = document.createElement('div');
+                spark.className = 'etincelle';
+                const angle = (i / 12) * Math.PI * 2 + (Math.random() - 0.5) * 0.4;
+                const dist = 22 + Math.random() * 28;
+                spark.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+                spark.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+                spark.style.backgroundColor = couleurs[i % couleurs.length];
+                spark.style.left = '50%';
+                spark.style.top = '42%';
+                const taille = 3 + Math.random() * 4;
+                spark.style.width = taille + 'px';
+                spark.style.height = taille + 'px';
+                container.appendChild(spark);
+                setTimeout(() => { if (spark.parentNode) spark.remove(); }, 750);
+            }
+        }
+
+        /* Affiche les boules — phase roulement (tournante=true) ou révélation (false) */
+        function afficherBoules(numeros, tournante) {
+            const wrapper = document.getElementById('boulesWrapper');
+
+            if (tournante) {
+                /* Phase 1 : les boules roulent depuis la gauche avec un "?" */
+                wrapper.innerHTML = '';
+                numeros.forEach((n, i) => {
+                    const container = document.createElement('div');
+                    container.className = 'boule-container';
+
+                    const uid = 'bg' + i + '_' + Date.now();
+                    const temp = document.createElement('div');
+                    temp.innerHTML = '<svg viewBox="0 0 100 100" class="boule-svg">'
+                        + creerMarkupBoule(uid, '?', true)
+                        + '</svg>';
+                    container.appendChild(temp.firstElementChild);
+                    wrapper.appendChild(container);
+
+                    /* Double rAF pour garantir que le navigateur a peint l'état initial
+                       avant d'ajouter la classe qui déclenche l'animation */
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            container.classList.add('rouler');
+                        });
+                    });
+                });
+            } else {
+                /* Phase 2 : révéler les numéros SANS recréer les boules */
+                const containers = wrapper.querySelectorAll('.boule-container');
+                containers.forEach((container, i) => {
+                    if (i >= numeros.length) return;
+
+                    /* Remplacer le texte "?" par le vrai numéro */
+                    const oldText = container.querySelector('.boule-numero');
+                    if (oldText) {
+                        const newText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                        newText.setAttribute('x', '50');
+                        newText.setAttribute('y', '49');
+                        newText.setAttribute('class', 'boule-numero reveler');
+                        newText.setAttribute('text-anchor', 'middle');
+                        newText.setAttribute('dominant-baseline', 'middle');
+                        newText.textContent = numeros[i];
+                        oldText.parentNode.replaceChild(newText, oldText);
+                    }
+
+                    /* Flash doré sur la boule entière */
+                    container.classList.add('revele');
+
+                    /* Étincelles */
+                    creerEtincelles(container);
+                });
+            }
+        }
+
         // TIRER 3 BOULES
         function tirer3Boules() {
             if (etatJeu.partieTerminee || etatJeu.index >= 99 || etatJeu.enCours || !etatJeu.peutTirer) return;
@@ -993,7 +1218,7 @@
                 numeros.push(etatJeu.numeroRestants[etatJeu.index++]);
             }
 
-            // Phase 1 : Tirage (3 secondes - boules tournent)
+            // Phase 1 : les boules roulent (3 secondes)
             afficherBoules(numeros, true);
             document.getElementById('grilleJoueurDiv').classList.add('tirage-actif');
             document.getElementById('grilleAdversaireDiv').classList.add('tirage-actif');
@@ -1002,7 +1227,8 @@
 
             setTimeout(() => {
                 if (partieDuTirage !== etatJeu.partieId) return;
-                // Phase 2 : Affichage des numéros + vérification
+
+                // Phase 2 : révélation des numéros
                 afficherBoules(numeros, false);
                 document.getElementById('grilleJoueurDiv').classList.remove('tirage-actif');
                 document.getElementById('grilleAdversaireDiv').classList.remove('tirage-actif');
@@ -1023,63 +1249,19 @@
                     finirTirage(false, 500);
                 }
 
-                // Robot cochage instantané
-                cocherRobot(numeros);
-                verifierLignesCompletes();
-                mettreAJourStats();
-                if (etatJeu.partieTerminee) return;
-
                 etatJeu.enCours = false;
+
+                // Le robot réfléchit 3 secondes avant de cocher ses numéros
+                if (!etatJeu.partieTerminee) {
+                    const robotPartieId = partieDuTirage;
+                    setTimeout(() => {
+                        if (robotPartieId !== etatJeu.partieId) return;
+                        cocherRobot(numeros);
+                        verifierLignesCompletes();
+                        mettreAJourStats();
+                    }, 3000);
+                }
             }, 3000);
-        }
-
-        // AFFICHAGE BOULES
-        function afficherBoules(numeros, tournante) {
-            const wrapper = document.getElementById('boulesWrapper');
-            wrapper.innerHTML = '';
-
-            numeros.forEach(n => {
-                const container = document.createElement('div');
-                container.className = 'boule-container';
-
-                const spinner = document.createElement('div');
-                spinner.className = 'boule-spinner';
-                if (tournante) spinner.classList.add('tournante');
-
-                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                svg.setAttribute('viewBox', '0 0 100 100');
-                svg.setAttribute('class', 'boule-svg');
-
-                const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-                const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'radialGradient');
-                gradient.setAttribute('id', 'bouleGradient' + n);
-                gradient.innerHTML = `
-                    <stop offset="0%" style="stop-color:#ffff99;stop-opacity:1" />
-                    <stop offset="50%" style="stop-color:#ffd700;stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:#cc9900;stop-opacity:1" />
-                `;
-                defs.appendChild(gradient);
-
-                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                circle.setAttribute('cx', '50');
-                circle.setAttribute('cy', '50');
-                circle.setAttribute('r', '40');
-                circle.setAttribute('class', 'boule');
-                circle.setAttribute('fill', 'url(#bouleGradient' + n + ')');
-
-                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                text.setAttribute('x', '50');
-                text.setAttribute('y', '50');
-                text.setAttribute('class', 'boule-numero');
-                text.textContent = tournante ? '?' : n;
-
-                svg.appendChild(defs);
-                svg.appendChild(circle);
-                svg.appendChild(text);
-                spinner.appendChild(svg);
-                container.appendChild(spinner);
-                wrapper.appendChild(container);
-            });
         }
 
         // HIGHLIGHT NUMÉROS DU TIRAGE
@@ -1292,7 +1474,7 @@
         // MISE À JOUR STATS
         function mettreAJourStats() {
             document.getElementById('gainJoueur').textContent = etatJeu.gainJoueur + ' 🪙';
-            
+
             const percentBoules = (etatJeu.index / 99) * 100;
 
             document.getElementById('progBoules').style.width = percentBoules + '%';
@@ -1354,16 +1536,16 @@
 
         document.getElementById('btnJouerAnonyme').addEventListener('click', () => {
             modeAnonyme = true;
-            profilActif = null;
             localStorage.setItem(CLE_MODE_ANONYME, '1');
+            profilActif = null;
             afficherProfil();
-            afficherMessage('Mode anonyme activé : les gains ne seront pas enregistrés.', 'info');
         });
 
         // DÉMARRAGE
-        initialiser();
-        actualiserProfilDepuisServeur();
+        (async function () {
+            await actualiserProfilDepuisServeur();
+            initialiser();
+        })();
     </script>
-  
 </body>
 </html>
